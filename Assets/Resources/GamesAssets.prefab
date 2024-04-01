@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8556584944453476458
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7273860528601474086}
+  - component: {fileID: 3995451336947961574}
+  m_Layer: 0
+  m_Name: GamesAssets
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7273860528601474086
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8556584944453476458}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 9.787954, y: 8.333101, z: 12.101616}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3995451336947961574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8556584944453476458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01304df3c26e41b46be66a0d101df84e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlayerSounds: {fileID: 11400000, guid: 164904b876c2eb44f9a9c36bbfb5628f, type: 2}
+  ConcreteSound: {fileID: 11400000, guid: 13a7f3d7a91dbc1478e57a1df0d0f7b6, type: 2}
+  GrassSound: {fileID: 11400000, guid: 33e7850b1ae6f2b43a4a920c7626790f, type: 2}
+  MetalSound: {fileID: 11400000, guid: 797a96cecfb09a34faed8f71a568a23e, type: 2}
+  MudSound: {fileID: 11400000, guid: 96e469450a36e794fbced76112dffe7b, type: 2}
+  SnowSound: {fileID: 11400000, guid: 52c12fa9fe5b2554c9242787c7fa422a, type: 2}
+  WaterSound: {fileID: 11400000, guid: 3cefd3369c28d1f4980c7b18bf23419d, type: 2}
+  WoodSound: {fileID: 11400000, guid: 4539a1b26f535b24baeb2f21c4762816, type: 2}

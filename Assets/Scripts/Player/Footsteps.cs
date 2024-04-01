@@ -1,40 +1,88 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class Footsteps : MonoBehaviour
 {
-  
+    [Header("Layer Target")]
     [SerializeField] private LayerMask groundMask;
-    [SerializeField] private AudioSource audioSource;
+    [Space]
+    [Header("Terrain Texture and  Footsteps Sounds")]
+    [SerializeField] private TerrainTextureSound[] terrainTextureSounds;
+    [Space]
+    [Header("Footsteps Sound Source")]
+    [SerializeField] private AudioSource FootSoundSource;
+    [Space]
+    [Header("Footsteps Sound Settings")]
+    [Range(0, 1)]
+    [SerializeField] private float footStepsVolume;
     private FootstepsSounds footStepSound;
-    GroundMaterial Material;
-    GroundMaterial currentMaterial;
-
-    private void Update()
+    public static event Action<Data> OnPlayerStepEvent;
+    private void Start()
     {
-        RaycastHit hit;
-        if(Physics.Raycast(transform.position, Vector3.down, out hit, 2f, groundMask))
+
+        StartCoroutine(GroundChecking());
+    }
+
+
+
+    IEnumerator GroundChecking()
+    {
+        while (true)
         {
-            if(hit.collider.TryGetComponent<GroundMaterial>(out Material))
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, Vector3.down, out hit, 2f, groundMask))
             {
-                if(currentMaterial == null)
+                if (hit.collider.TryGetComponent<Terrain>(out Terrain terrain))
                 {
-                    soundIteration = 0;
-                    currentMaterial = Material;
-                    footStepSound = currentMaterial.footStepsSound;
+                    yield return StartCoroutine(PlayFootStepsOnTerrain(terrain, hit.point));
                 }
-                else if(Material.MaterialType != currentMaterial.MaterialType)
+                else if (hit.collider.TryGetComponent<MeshRenderer>(out MeshRenderer meshRendrer))
                 {
-                    soundIteration = 0;
-                    currentMaterial = Material;
-                    footStepSound = currentMaterial.footStepsSound;
+                    yield return StartCoroutine(PlayFootStepsOnMeshRendrer(meshRendrer));
                 }
+                
             }
-            else
+            yield return null;
+        }
+    }
+
+    IEnumerator PlayFootStepsOnTerrain(Terrain terrain, Vector3 hitPoint)
+    {
+        Vector3 terrainPos = terrain.transform.position;
+        int mapx = Mathf.FloorToInt(((hitPoint.x - terrainPos.x) / terrain.terrainData.size.x) * terrain.terrainData.alphamapWidth);
+        int mapz = Mathf.FloorToInt(((hitPoint.z - terrainPos.z) / terrain.terrainData.size.z) * terrain.terrainData.alphamapHeight);
+
+        float[,,] splatmapData = terrain.terrainData.GetAlphamaps(mapx, mapz, 1, 1);
+
+        int texIndex = 0;
+        for (int i = 1; i < splatmapData.Length; i++)
+        {
+            if (splatmapData[0, 0, i] > splatmapData[0, 0, texIndex])
             {
-                footStepSound = null;
-                currentMaterial = null;
+                texIndex = i;
+            }
+        }
+        foreach (var terrainTextureSound in terrainTextureSounds)
+        {
+            if (terrainTextureSound.albedo == terrain.terrainData.terrainLayers[texIndex].diffuseTexture)
+            {
+                footStepSound = terrainTextureSound.footStepSounds;
+                yield return null;
+                break;
+            }
+        }
+        yield return null;
+    }
+    IEnumerator PlayFootStepsOnMeshRendrer(MeshRenderer meshRendrer)
+    {
+        foreach(var terrainTextureSound in terrainTextureSounds)
+        {
+            if (terrainTextureSound.albedo == meshRendrer.material.GetTexture("_MainTex"))
+            {
+                footStepSound = terrainTextureSound.footStepSounds;
+                yield return null;
+                break;
             }
         }
     }
@@ -43,7 +91,7 @@ public class Footsteps : MonoBehaviour
     {
         if (footStepSound != null)
         {
-            SoundManager.Instance.PlayerSfxOnce(footStepSound.FootSteps[soundIteration], audioSource);
+            OnPlayerStepEvent.Invoke(new AudioData { clip=footStepSound.FootSteps[soundIteration],aSource= FootSoundSource,volume= footStepsVolume });
             if(footStepSound.FootSteps.Count-1 > soundIteration)
             {
                 soundIteration++;
@@ -53,5 +101,12 @@ public class Footsteps : MonoBehaviour
                 soundIteration = 0;
             }
         }
+    }
+
+    [System.Serializable]
+    public class TerrainTextureSound
+    {
+        public Texture albedo;
+        public FootstepsSounds footStepSounds;
     }
 }

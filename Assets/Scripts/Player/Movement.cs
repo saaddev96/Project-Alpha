@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
+using UnityEngine;
+using System;
 public class Movement : MonoBehaviour
 {
     [Header("Functional Parameters")]
@@ -9,9 +8,9 @@ public class Movement : MonoBehaviour
     [SerializeField] private bool canSlope;
     [SerializeField] private bool canCrouch;
     [SerializeField] private bool canJump;
-    [Header("PLAYER INPUT READER")]
-    [SerializeField] private InputReader _inputReader;
     [Space]
+    [Header("Player Input Reader")]
+    [SerializeField] private InputReader _inputReader;
 
     [Header("Movement Parameters")]
     [SerializeField] private float walkSpeed = 5f;
@@ -22,25 +21,34 @@ public class Movement : MonoBehaviour
     [SerializeField] private float JumpHeight;
     [SerializeField] private float gravityMultiplier =-8.9f;
     [SerializeField] private float windPower = 1.4f;
+    [SerializeField] bool isAirBorn = false;
+    [SerializeField] private AudioSource FootAudioSource;
     [Space]
 
     [Header("Slope Parameters")]
     [SerializeField] private float slopeSpeed;
     [Space]
-
+    [Header("Raycast Layer")]
     [SerializeField] private LayerMask groundMask;
+    [Space]
+    [Header("Character Animator")]
     [SerializeField] private Animator FPS_Animator;
-    CharacterController _characterController;
-    Vector2 inputMoveDirection;
-    bool isGrounded =>_characterController.isGrounded;
-    bool isJumping= false;
-    bool isSprinting = false;
-    bool isMoving = false;
-    [SerializeField] bool isAirBorn = false;
-    Vector3 moveDirection;
-    Vector3 hitnormal;
 
+    // public Read only field 
     public bool IsPlayerMoving => isMoving;
+
+    // private Field
+    private CharacterController _characterController;
+    private Vector2 inputMoveDirection;
+    private bool isGrounded =>_characterController.isGrounded;
+    private bool isJumping = false;
+    private bool isSprinting = false;
+    private bool isMoving = false;
+    private Vector3 moveDirection;
+    private Vector3 hitnormal;
+
+    // Events
+    public static event Action<Data> OnPlayerLandedEvent;
     private bool isSliding
     {
         get
@@ -166,23 +174,22 @@ public class Movement : MonoBehaviour
         if (!isGrounded)
         {
             moveDirection.y += gravityMultiplier * Time.deltaTime;
-        }
-        if (moveDirection.y < -1f)
-        {
-            isAirBorn = true;
-            if (Physics.SphereCast(transform.position, 1.1f, Vector3.down, out _, 0.8f, groundMask)&& isAirBorn)
+            if (moveDirection.y < -4.2)
             {
-                FPS_Animator.SetBool("isLanding", isAirBorn);
-                isAirBorn = false;
+                isAirBorn = true;
             }
-
+        }
+      
+        else if(isGrounded && isAirBorn)
+        {
+            FPS_Animator.SetBool("isLanding", isAirBorn);
+            OnPlayerLandedEvent?.Invoke(new AudioData {clip=GameAssets.Instance.PlayerSounds.GetSoundClip("Land"), aSource=FootAudioSource,volume=0.1f });
+            isAirBorn = false;
         }
         else
         {
-            isAirBorn = false;
-            FPS_Animator.SetBool("isLanding", isAirBorn);
+            FPS_Animator.SetBool("isLanding", false);
         }
-
     }
   
 }

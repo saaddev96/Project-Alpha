@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: PlayerSounds
   m_EditorClassIdentifier: 
   sounds:
-  - soundName: Landing
-    clip: {fileID: 0}
+  - soundName: Land
+    clip: {fileID: 8300000, guid: 7d2daae419d9c694d8f6690d14f940c5, type: 3}
