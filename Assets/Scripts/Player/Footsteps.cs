@@ -18,6 +18,7 @@ public class Footsteps : MonoBehaviour
     [SerializeField] private float footStepsVolume;
     private FootstepsSounds footStepSound;
     public static event Action<Data> OnPlayerStepEvent;
+    public static Texture ActiveTerrainTexture;
     private void Start()
     {
 
@@ -68,6 +69,7 @@ public class Footsteps : MonoBehaviour
             if (terrainTextureSound.albedo == terrain.terrainData.terrainLayers[texIndex].diffuseTexture)
             {
                 footStepSound = terrainTextureSound.footStepSounds;
+                ActiveTerrainTexture = terrainTextureSound.albedo;
                 yield return null;
                 break;
             }
@@ -81,6 +83,7 @@ public class Footsteps : MonoBehaviour
             if (terrainTextureSound.albedo == meshRendrer.material.GetTexture("_MainTex"))
             {
                 footStepSound = terrainTextureSound.footStepSounds;
+                ActiveTerrainTexture = terrainTextureSound.albedo;
                 yield return null;
                 break;
             }
