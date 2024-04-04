@@ -62,6 +62,7 @@ public class Movement : AnimatorBrain
     private const float upwardCheckDistance = 1f;
     // Events
     public static event Action<Data> OnPlayerLandedEvent;
+    float angle;
     private bool isSliding
     {
         get
@@ -69,8 +70,9 @@ public class Movement : AnimatorBrain
             if (Physics.SphereCast(transform.position, _characterController.radius, Vector3.down, out RaycastHit slopHit,groundCheckDistance, groundMask))
             {
                 hitnormal = slopHit.normal;
-                float angle = Vector3.Angle(hitnormal, Vector3.up);
+                angle = Vector3.Angle(hitnormal, Vector3.up);
                 return angle > _characterController.slopeLimit;
+
             }
             else
             {
@@ -175,11 +177,13 @@ public class Movement : AnimatorBrain
         Land();
         _characterController.Move(moveDirection * Time.deltaTime);
     }
+    float moveSpeed;
     void Move()
     {
   
         float moveSpeed = isCrouched ? crouchingSpeed : isSprinting ? sprintSpeed :walkSpeed;
-        moveDirection = (transform.forward * inputMoveDirection.y * moveSpeed + transform.right * inputMoveDirection.x * moveSpeed * 0.7f);
+        moveDirection = (transform.forward * inputMoveDirection.y * moveSpeed+ transform.right * inputMoveDirection.x * moveSpeed * 0.7f+Vector3.down*_characterController.height/2*slopeSpeed);
+    
         if (isMoving)
         {
             if (isCrouched)
@@ -220,8 +224,8 @@ public class Movement : AnimatorBrain
         if (isSliding && canSlope)
         {
             moveDirection = new Vector3(hitnormal.x, -hitnormal.y, hitnormal.z) * slopeSpeed;
-
         }
+      
     }
     void Land()
     {
