@@ -27,7 +27,11 @@ public class Movement : AnimatorBrain
     [SerializeField] bool isAirBorn = false;
     [SerializeField] private AudioSource FootAudioSource;
     [Space]
-
+    [Header("Crouch Parameters")]
+    [SerializeField] private float crouchHeight = 1f;
+    [SerializeField] private float crouchingSpeed = 2.5f;
+    [SerializeField] private float timeToCrouch = 10f;
+    [Space]
     [Header("Slope Parameters")]
     [SerializeField] private float slopeSpeed;
     [Space]
@@ -42,21 +46,27 @@ public class Movement : AnimatorBrain
     // private Field
     private CharacterController _characterController;
     private Vector2 inputMoveDirection;
+    private float playerHeight;
     private bool isGrounded =>_characterController.isGrounded;
     private bool isJumping = false;
     private bool isSprinting = false;
     private bool isMoving = false;
+    private bool isCrouching = false;
+    private bool isCrouched = false;
     private Vector3 moveDirection;
     private Vector3 hitnormal;
     private Texture ActiveTerrainTexture => Footsteps.ActiveTerrainTexture;
-    
+
+    //Constants
+    private const float groundCheckDistance = 1.5f;
+    private const float upwardCheckDistance = 1f;
     // Events
     public static event Action<Data> OnPlayerLandedEvent;
     private bool isSliding
     {
         get
         {
-            if (Physics.SphereCast(transform.position, _characterController.radius, Vector3.down, out RaycastHit slopHit, 1.5f, groundMask))
+            if (Physics.SphereCast(transform.position, _characterController.radius, Vector3.down, out RaycastHit slopHit,groundCheckDistance, groundMask))
             {
                 hitnormal = slopHit.normal;
                 float angle = Vector3.Angle(hitnormal, Vector3.up);
@@ -75,11 +85,12 @@ public class Movement : AnimatorBrain
         {
             instance = this;
         }
-        AnimatorBrainInit(FPS_Animator.layerCount,FPS_Animator,eAnimation.Idle);
         if(_characterController == null)
         {
             _characterController = gameObject.GetComponent<CharacterController>();
         }
+        AnimatorBrainInit(FPS_Animator.layerCount,FPS_Animator,eAnimation.Idle);
+        playerHeight = _characterController.height;
     }
     private void Start()
     {
@@ -89,21 +100,25 @@ public class Movement : AnimatorBrain
     private void OnEnable()
     {
         _inputReader.MoveEvent += HandleMoveInput;
-        _inputReader.JumpEvent += HandleJump;
-        _inputReader.JumpCancelledEvent += HandleJumpCancel;
-        _inputReader.SprintEvent += HandleSprint;
-        _inputReader.SprintCancelledEvent += HandleSprintCancel;
-        _inputReader.MoveCanceledEvent += MoveCanceled;
+        _inputReader.MoveCanceledEvent += MoveCanceledInput;
+        _inputReader.JumpEvent += HandleJumpInput;
+        _inputReader.JumpCancelledEvent += HandleJumpCancelInput;
+        _inputReader.SprintEvent += HandleSprintInput;
+        _inputReader.SprintCancelledEvent += HandleSprintCancelInput;
+        _inputReader.CrouchEvent += HandleCrouchInput;
+        _inputReader.CrouchCancelledEvent += HandleCrouchCancelInput;
 
     }
     private void OnDisable()
     {
         _inputReader.MoveEvent -= HandleMoveInput;
-        _inputReader.JumpEvent -= HandleJump;
-        _inputReader.JumpCancelledEvent -= HandleJumpCancel;
-        _inputReader.SprintEvent -= HandleSprint;
-        _inputReader.SprintCancelledEvent -= HandleSprintCancel;
-        _inputReader.MoveCanceledEvent -= MoveCanceled;
+        _inputReader.MoveCanceledEvent -= MoveCanceledInput;
+        _inputReader.JumpEvent -= HandleJumpInput;
+        _inputReader.JumpCancelledEvent -= HandleJumpCancelInput;
+        _inputReader.SprintEvent -= HandleSprintInput;
+        _inputReader.SprintCancelledEvent -= HandleSprintCancelInput;
+        _inputReader.CrouchEvent -= HandleCrouchInput;
+        _inputReader.CrouchCancelledEvent -= HandleCrouchCancelInput;
     }
     
     private void Update()
@@ -116,49 +131,62 @@ public class Movement : AnimatorBrain
         isMoving = true;
         inputMoveDirection = dir;
     }
-    void MoveCanceled()
+    void MoveCanceledInput()
     {
         isMoving = false;
     }
-    void HandleJump()
+    void HandleJumpInput()
     {
         isJumping = true;
     }
-    void HandleJumpCancel()
+    void HandleJumpCancelInput()
     {
         isJumping = false;
     }
-    void HandleSprint()
+    void HandleSprintInput()
     {
         isSprinting = true;
 
     }
-    void HandleSprintCancel()
+    void HandleSprintCancelInput()
     {
         isSprinting = false;
 
+    }
+    void HandleCrouchInput()
+    {
+        isCrouching = true;
+
+    }
+    void HandleCrouchCancelInput()
+    {
+        isCrouching = false;
     }
 
     void PlayerFinalMovement()
     {
         if (isGrounded)
         {
-
             Move();
             Jump();
             Slide();
         }
+        Crouch();
         Land();
         _characterController.Move(moveDirection * Time.deltaTime);
     }
     void Move()
     {
   
-        float moveSpeed = isSprinting ? sprintSpeed : walkSpeed;
+        float moveSpeed = isCrouched ? crouchingSpeed : isSprinting ? sprintSpeed :walkSpeed;
         moveDirection = (transform.forward * inputMoveDirection.y * moveSpeed + transform.right * inputMoveDirection.x * moveSpeed * 0.7f);
         if (isMoving)
         {
-            if (isSprinting)
+            if (isCrouched)
+            {
+                AnimatorBrainPlay(eAnimation.Crouch, 0, false, false);
+            }
+            else if (isSprinting && !isCrouched)
             {
                 AnimatorBrainPlay(eAnimation.Sprint,0,false,false);
             }
@@ -177,10 +205,14 @@ public class Movement : AnimatorBrain
     {
         if (isJumping && canJump)
         {
+            if(!CheckAbovePlayer(out RaycastHit hit))
+            {
+            isJumping = false;
             AnimatorBrainPlay(eAnimation.Jump, 0, false, false);
             moveDirection.y = Mathf.Sqrt(JumpHeight / 10 * -2f * gravityMultiplier);
             if (isMoving)
                 moveDirection -= transform.forward * windPower;
+            }
         }
     }
     void Slide()
@@ -204,7 +236,7 @@ public class Movement : AnimatorBrain
       
         else if(isGrounded && isAirBorn)
         {
-            AnimatorBrainPlay(eAnimation.Land, 0, true, false);
+            AnimatorBrainPlay(eAnimation.Land, 0, true, false,0.2f);
             string floorAudio;
             if (ActiveTerrainTexture != null && ActiveTerrainTexture.name.Contains("water"))
             {
@@ -217,11 +249,41 @@ public class Movement : AnimatorBrain
             OnPlayerLandedEvent?.Invoke(new AudioData { clip = GameAssets.Instance.PlayerSounds.GetSoundClip(floorAudio), aSource = FootAudioSource, volume = 0.1f });
             isAirBorn = false;
         }
+    }
+
+    void Crouch()
+    {
+
+        if (isCrouching && canCrouch)
+        {
+            isCrouched = true;
+            if (_characterController.height > crouchHeight)
+            {
+                _characterController.height = Mathf.Lerp(_characterController.height, crouchHeight, timeToCrouch * Time.deltaTime);
+            }
+
+        }
         else
         {
-           
+
+            if (_characterController.height < playerHeight)
+            {
+                if (!CheckAbovePlayer(out RaycastHit hit))
+                {
+                    isCrouched = false;
+                    _characterController.height = Mathf.Lerp(_characterController.height, playerHeight, timeToCrouch * Time.deltaTime);
+                }
+            }
         }
     }
-  
-    
+    bool CheckAbovePlayer(out RaycastHit hit)
+    {
+        return Physics.Raycast(transform.position, Vector3.up, out hit, upwardCheckDistance);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.up); ;
+    }
 }

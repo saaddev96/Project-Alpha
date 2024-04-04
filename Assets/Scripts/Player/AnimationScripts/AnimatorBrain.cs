@@ -7,6 +7,7 @@ public enum eAnimation
     Idle,
     Walk,
     Sprint,
+    Crouch,
     Jump,
     Land
 }

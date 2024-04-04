@@ -90,7 +90,7 @@ public class Footsteps : MonoBehaviour
         }
     }
     int soundIteration = 0;
-    void PlayFootSteps()
+   public void PlayFootSteps()
     {
         if (footStepSound != null)
         {

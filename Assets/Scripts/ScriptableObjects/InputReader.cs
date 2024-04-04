@@ -14,6 +14,8 @@ public class InputReader : ScriptableObject, CustomInputs.IGamePlayActions
     public event Action JumpCancelledEvent;
     public event Action SprintEvent;
     public event Action SprintCancelledEvent;
+    public event Action CrouchEvent;
+    public event Action CrouchCancelledEvent;
     private void OnEnable()
     {
         if(_customIUnputs== null)
@@ -74,5 +76,17 @@ public class InputReader : ScriptableObject, CustomInputs.IGamePlayActions
             SprintCancelledEvent?.Invoke();
         }
 
+    }
+
+    public void OnCrouch(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            CrouchEvent?.Invoke();
+        }
+        if (context.phase == InputActionPhase.Canceled)
+        {
+            CrouchCancelledEvent?.Invoke();
+        }
     }
 }
