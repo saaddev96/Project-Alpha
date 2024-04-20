@@ -14,6 +14,7 @@ public class CinemaMachinePOVExtension : CinemachineExtension
     private Vector3 rotation;
     private Vector2 _lookDirection;
 
+
     protected override void OnEnable()
     {
         base.OnEnable();

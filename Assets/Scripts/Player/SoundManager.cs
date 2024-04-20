@@ -13,12 +13,12 @@ public class SoundManager : Singleton<SoundManager>
     }
     private void OnEnable()
     {
-        Movement.OnPlayerLandedEvent += HandleData;
+        PlayerStateMachine.OnPlayerLandedEvent += HandleData;
         Footsteps.OnPlayerStepEvent += HandleData;
     }
     private void OnDisable()
     {
-        Movement.OnPlayerLandedEvent -= HandleData;
+        PlayerStateMachine.OnPlayerLandedEvent -= HandleData;
         Footsteps.OnPlayerStepEvent -= HandleData;
     }
  

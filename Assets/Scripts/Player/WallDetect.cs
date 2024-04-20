@@ -27,7 +27,7 @@ public class WallDetect : MonoBehaviour
     private float angle;
     bool isTouching = false;
     private RaycastHit hit;
-    private Movement playerMovement;
+    private PlayerStateMachine playerMovement;
     public bool canLeanOnWalll
     {
         get
@@ -63,7 +63,7 @@ public class WallDetect : MonoBehaviour
     }
     private void Awake()
     {
-        playerMovement = GetComponent<Movement>();
+        playerMovement = GetComponent<PlayerStateMachine>();
     }
     private void Start()
     {

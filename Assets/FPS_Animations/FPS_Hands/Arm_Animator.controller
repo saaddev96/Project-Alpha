@@ -1,6 +1,33 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1102 &-7752943712579729645
+--- !u!1102 &-8573965428296363720
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Land
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours:
+  - {fileID: -7062495863975528614}
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 7400000, guid: 4c2708ff59d6f7044a9b334ff75799a8, type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
+--- !u!1102 &-7909247339195530200
 AnimatorState:
   serializedVersion: 6
   m_ObjectHideFlags: 1
@@ -26,6 +53,21 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!114 &-7062495863975528614
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65e5b6a66ea7e83409326979b5a24e44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animation: 0
+  locklayer: 0
+  crossfade: 0
 --- !u!1107 &-5075666480301853704
 AnimatorStateMachine:
   serializedVersion: 6
@@ -36,23 +78,26 @@ AnimatorStateMachine:
   m_Name: EmptyHands
   m_ChildStates:
   - serializedVersion: 1
-    m_State: {fileID: 3819392594728784032}
-    m_Position: {x: 40, y: 70, z: 0}
+    m_State: {fileID: 4175955473792884683}
+    m_Position: {x: 210, y: 70, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: 704544252236681104}
-    m_Position: {x: 40, y: 180, z: 0}
+    m_State: {fileID: 2228990354103421775}
+    m_Position: {x: 200, y: 140, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: 6146271312061350078}
-    m_Position: {x: 40, y: 230, z: 0}
+    m_State: {fileID: 6600590243038495735}
+    m_Position: {x: 200, y: 190, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: -7752943712579729645}
-    m_Position: {x: 40, y: 330, z: 0}
+    m_State: {fileID: -7909247339195530200}
+    m_Position: {x: 200, y: 290, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: 9153330180722978902}
-    m_Position: {x: 40, y: 380, z: 0}
+    m_State: {fileID: -8573965428296363720}
+    m_Position: {x: 200, y: 340, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: 937843116198610539}
-    m_Position: {x: 40, y: 280, z: 0}
+    m_State: {fileID: 6701231012527450083}
+    m_Position: {x: 200, y: 240, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -2026465976009788233}
+    m_Position: {x: 200, y: 390, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -62,7 +107,7 @@ AnimatorStateMachine:
   m_EntryPosition: {x: -160, y: 80, z: 0}
   m_ExitPosition: {x: 800, y: 120, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
-  m_DefaultState: {fileID: 3819392594728784032}
+  m_DefaultState: {fileID: 4175955473792884683}
 --- !u!206 &-2761727074067389638
 BlendTree:
   m_ObjectHideFlags: 1
@@ -78,6 +123,32 @@ BlendTree:
   m_UseAutomaticThresholds: 1
   m_NormalizedBlendValues: 0
   m_BlendType: 0
+--- !u!1102 &-2026465976009788233
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Interact
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 7400000, guid: 97505750630a6854f9eb3f9513ad0056, type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!91 &9100000
 AnimatorController:
   m_ObjectHideFlags: 0
@@ -100,7 +171,7 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
---- !u!1102 &704544252236681104
+--- !u!1102 &2228990354103421775
 AnimatorState:
   serializedVersion: 6
   m_ObjectHideFlags: 1
@@ -126,33 +197,7 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!1102 &937843116198610539
-AnimatorState:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Crouch
-  m_Speed: 0.9
-  m_CycleOffset: 0
-  m_Transitions: []
-  m_StateMachineBehaviours: []
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 1
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 0f872c2292b255e4f8f4ba0ec819f790, type: 2}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: 
---- !u!1102 &3819392594728784032
+--- !u!1102 &4175955473792884683
 AnimatorState:
   serializedVersion: 6
   m_ObjectHideFlags: 1
@@ -178,22 +223,7 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!114 &5603293439249471605
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65e5b6a66ea7e83409326979b5a24e44, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  animation: 0
-  locklayer: 0
-  crossfade: 0
---- !u!1102 &6146271312061350078
+--- !u!1102 &6600590243038495735
 AnimatorState:
   serializedVersion: 6
   m_ObjectHideFlags: 1
@@ -219,19 +249,18 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!1102 &9153330180722978902
+--- !u!1102 &6701231012527450083
 AnimatorState:
   serializedVersion: 6
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Land
-  m_Speed: 1
+  m_Name: Crouch
+  m_Speed: 0.9
   m_CycleOffset: 0
   m_Transitions: []
-  m_StateMachineBehaviours:
-  - {fileID: 5603293439249471605}
+  m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -240,7 +269,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 4c2708ff59d6f7044a9b334ff75799a8, type: 2}
+  m_Motion: {fileID: 7400000, guid: 0f872c2292b255e4f8f4ba0ec819f790, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

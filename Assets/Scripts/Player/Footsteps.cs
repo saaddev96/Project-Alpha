@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using System;
+using System.Linq;
 
 public class Footsteps : MonoBehaviour
 {
@@ -17,8 +18,12 @@ public class Footsteps : MonoBehaviour
     [Range(0, 1)]
     [SerializeField] private float footStepsVolume;
     private FootstepsSounds footStepSound;
+    // Events
     public static event Action<Data> OnPlayerStepEvent;
     public static Texture ActiveTerrainTexture;
+
+    private AudioData footstepsAudioData = new AudioData();
+
     private void Start()
     {
 
@@ -78,7 +83,8 @@ public class Footsteps : MonoBehaviour
     }
     IEnumerator PlayFootStepsOnMeshRendrer(MeshRenderer meshRendrer)
     {
-        foreach(var terrainTextureSound in terrainTextureSounds)
+
+       foreach(var terrainTextureSound in terrainTextureSounds)
         {
             if (terrainTextureSound.albedo == meshRendrer.material.GetTexture("_MainTex"))
             {
@@ -94,8 +100,12 @@ public class Footsteps : MonoBehaviour
     {
         if (footStepSound != null)
         {
-            OnPlayerStepEvent.Invoke(new AudioData { clip=footStepSound.FootSteps[soundIteration],aSource= FootSoundSource,volume= footStepsVolume });
-            if(footStepSound.FootSteps.Count-1 > soundIteration)
+            //OnPlayerStepEvent.Invoke(new AudioData { clip = footStepSound.FootSteps[soundIteration], aSource = FootSoundSource, volume = footStepsVolume });
+            footstepsAudioData.clip = footStepSound.FootSteps[soundIteration];
+            footstepsAudioData.aSource = FootSoundSource;
+            footstepsAudioData.volume = footStepsVolume;
+            OnPlayerStepEvent.Invoke(footstepsAudioData);
+            if (footStepSound.FootSteps.Count-1 > soundIteration)
             {
                 soundIteration++;
             }
