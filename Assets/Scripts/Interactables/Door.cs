@@ -3,17 +3,17 @@ using UnityEngine;
 
 public class Door : InteractableBase
 {
-
-    public override void OnInteract()
+    bool isOpen = false;
+    public override void InteractCompleted()
     {
-        elapsedTime = 0;
-        fillAmount = 0;
-        timeToInteract = 3.0f;
-        interactableName = "Door";
-        UiManager.Instance.InteractBG.gameObject.SetActive(true);
-        UiManager.Instance.InteractFill.fillAmount = fillAmount;
-        playerStateMachine.IsInteracting = true;
+        OpenClose();
     }
 
-
+    void OpenClose()
+    {
+        isOpen = !isOpen;
+        float angle = isOpen ? -90 : 0;
+        transform.parent.rotation = Quaternion.Euler(Vector3.up * angle);
+    }
+    
 }

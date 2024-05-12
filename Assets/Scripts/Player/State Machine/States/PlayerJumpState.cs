@@ -46,6 +46,7 @@ public class PlayerJumpState : PlayerBaseState
     {
         CheckState();
         InitSubState();
+        ctx.AnimatorBrainPlay(eAnimation.Jump, ctx.Layer, false, false);
         ctx.CC.Move(ctx.moveDirection * Time.deltaTime);
     }
 
@@ -54,7 +55,6 @@ public class PlayerJumpState : PlayerBaseState
     {
         if (!ctx.CheckAbovePlayer(out RaycastHit hit))
         {
-            ctx.AnimatorBrainPlay(eAnimation.Jump, 0, false, false);
             ctx.moveDirection.y = Mathf.Sqrt(ctx.JumpHeight / 10 * -2f * ctx.GravityMultiplier);
         }
     }

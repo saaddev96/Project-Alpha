@@ -35,13 +35,28 @@ public class AnimatorBrain<EAnim> : MonoBehaviour where EAnim : Enum
     {
         StatesLocked[layer] = state;
     }
-    public void AnimatorBrainPlay(EAnim animation,int layer,bool lockAnimation,bool bypass ,float crossfade = 0.2f)
+    public void AnimatorBrainPlay(EAnim animation, int layer ,bool lockAnimation,bool bypass ,float crossfade = 0.2f)
     {
-
+        if(animator == null || !animator.HasState(layer, GetAnimationHashFromEnum(currentAnimation[layer])))
+        {
+            //TODO
+            return;
+        }
         if (StatesLocked[layer] && !bypass) return;
         if (Enum.GetName(typeof(EAnim), currentAnimation[layer])  == Enum.GetName(typeof(EAnim), animation)) return;
         StatesLocked[layer] = lockAnimation;
         currentAnimation[layer] = animation;
         animator.CrossFade(GetAnimationHashFromEnum(currentAnimation[layer]), crossfade, layer);
+        
+        
+    }
+
+    public void AnimatorBrainStopCurrent(int layer)
+    {
+        if (currentAnimation[layer] != null)
+        {
+            animator.StopPlayback();
+            LockLayer(false, layer);
+        }
     }
 }

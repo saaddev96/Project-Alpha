@@ -2,7 +2,6 @@
 public class StateFactory
 {
     PlayerStateMachine _ctx;
-
     public PlayerBaseState _playerIdleState ;
     public PlayerBaseState _playerWalkState;
     public PlayerBaseState _playerJumpState ;
@@ -50,4 +49,5 @@ public class StateFactory
     {
         return _playerUnCrouchState;
     }
+
 }

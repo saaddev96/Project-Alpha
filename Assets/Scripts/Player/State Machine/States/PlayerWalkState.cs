@@ -26,6 +26,7 @@ public class PlayerWalkState : PlayerBaseState
         {
             SwitchState(factory.Interact());
         }
+
     }
 
     public override void EnterState()
@@ -62,19 +63,37 @@ public class PlayerWalkState : PlayerBaseState
 
         if (ctx.isGrounded)
         {
-
             ctx.FPSControl();
-            if (ctx.IsSprinting && !ctx.IsCrouched)
+            if (ctx.IsSprinting && !ctx.IsCrouched&& !ctx.IsAdsing)
             {
-                ctx.AnimatorBrainPlay(eAnimation.Sprint, 0, false, false);
+                ctx.AnimatorBrainPlay(eAnimation.Idle, ctx.Layer, false, false);
             }
             else if (ctx.IsCrouched)
             {
-                ctx.AnimatorBrainPlay(eAnimation.Crouch, 0, false, false);
+                if (PlayerStateMachine.instance.IsAdsing)
+                {
+                    //ctx.AnimatorBrainPlay(eAnimation.AdsCrouch, ctx.Layer, false, false,0.08f);
+                    ctx.AnimatorBrainPlay(eAnimation.Ads, ctx.Layer, false, false, 0.08f);
+                }
+                else
+                {
+                    //ctx.AnimatorBrainPlay(eAnimation.Crouch, ctx.Layer, false, false);
+                    ctx.AnimatorBrainPlay(eAnimation.Idle, ctx.Layer, false, false, 0.08f);
+                }
             }
             else
             {
-                ctx.AnimatorBrainPlay(eAnimation.Walk, 0, false, false);
+                if (PlayerStateMachine.instance.IsAdsing)
+                {
+                    //ctx.AnimatorBrainPlay(eAnimation.AdsWalk, ctx.Layer, false, false, 0.08f);
+                    ctx.AnimatorBrainPlay(eAnimation.Ads, ctx.Layer, false, false, 0.08f);
+                }
+                else
+                {
+
+                    //ctx.AnimatorBrainPlay(eAnimation.Walk, ctx.Layer, false, false);
+                    ctx.AnimatorBrainPlay(eAnimation.Idle, ctx.Layer, false, false, 0.08f);
+                }
             }
         }
 

@@ -1,12 +1,42 @@
-
+using System.Collections;
+using UnityEngine;
 public abstract class Weapon : Item
 {
 
-    protected abstract override void OnActive();
 
-    protected abstract override void OnInactive();
+    public override void OnActive()
+    {
+        this.gameObject.SetActive(true);
+    }
 
-    protected abstract override void OnInteract();
+    public override void OnInactive()
+    {
+        this.gameObject.SetActive(false);
+    }
+
+    public override void OnInteract() 
+    {
+        
+    }
+    public virtual void Inspect()
+    {
+
+    }
+    public virtual void Reload()
+    {
+
+    }
+    public virtual void Fire()
+    {
+
+    }
+    public virtual void Aim(bool ctx)
+    {
+
+    }
 
     protected abstract override void OnMouseOver();
+
+ 
+
 }

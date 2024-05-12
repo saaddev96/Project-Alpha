@@ -21,10 +21,7 @@ public class PlayerInteractState : PlayerBaseState
         {
             SwitchState(factory.Idle());
         }
-        //if(ctx.IsInteracting && ctx.Interacted)
-        //{
-        //    SwitchState(factory.Idle());
-        //}
+
     }
 
     public override void EnterState()
@@ -33,7 +30,7 @@ public class PlayerInteractState : PlayerBaseState
         interactableBase = ctx.currentInteractable;
         interactableBase.OnInteract();
         interactableBase.OnInteracterExit();
-
+        ctx.Interacted = false;
     }
 
     public override void ExitState()
@@ -52,7 +49,7 @@ public class PlayerInteractState : PlayerBaseState
         if (interactableBase != null)
         {
             interactableBase.OnInteracting();
-            ctx.AnimatorBrainPlay(eAnimation.Interact, 0, false, false);
+            ctx.AnimatorBrainPlay(eAnimation.Interact, ctx.Layer, false, false);
         }
     }
 

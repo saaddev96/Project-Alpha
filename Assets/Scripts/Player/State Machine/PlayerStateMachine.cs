@@ -4,13 +4,23 @@ using UnityEngine.InputSystem;
 using System.Threading.Tasks;
 public enum eAnimation
 {
+    Draw,
+    Holster,
     Idle,
     Walk,
     Sprint,
     Crouch,
     Jump,
     Land,
-    Interact
+    Interact,
+    Inspect,
+    Ads,
+    AdsWalk,
+    AdsCrouch,
+    Fire,
+    FireAds,
+    Reload,
+    ReloadEmpty,
 }
 public enum PlayerState
 {
@@ -20,14 +30,14 @@ public enum PlayerState
     Jumping,
     Sliding,
     Crouching,
-    Interacting
+    Interacting,
 }
 public class PlayerStateMachine : AnimatorBrain<eAnimation>
 {
     private PlayerBaseState _currentState;
     private StateFactory _states;
-
     public static PlayerStateMachine instance;
+    private HeadBob _headBob;
     [Header("Player State")]
     [SerializeField]private PlayerState playerState = PlayerState.None;
     [Space]
@@ -57,15 +67,18 @@ public class PlayerStateMachine : AnimatorBrain<eAnimation>
     [Header("Slope Parameters")]
     [SerializeField] private float slopeSpeed;
     [Space]
+    [Header("HeadBob Parameters")]
+    [SerializeField,Range(0.1f,1)] private float headBobSpeed;
+    [Space]
     [Header("Raycast Layer")]
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private LayerMask interactionMask;
 
     [Header("Character Animator")]
-    [SerializeField] private Animator FPS_Animator;
+    [SerializeField] private Animator fps_Animator;
     // public readonly fields
     public bool IsPlayerMoving => isMoving;
-    public Vector3 moveDirection;
+    [HideInInspector]public Vector3 moveDirection;
 
     // private Field
     private CharacterController _characterController;
@@ -82,17 +95,22 @@ public class PlayerStateMachine : AnimatorBrain<eAnimation>
     private bool interacted = false;
     private bool ableToInteract = false;
     private bool isInteracting = false;
+    private bool isSwitchingItem = false;
+    private bool isAdsing = false;
     private Vector3 groundCheckHitnormal;
     private Vector3 groundCheckHitPoint;
     private AudioData LandAudioData = new AudioData();
     private float moveSpeed;
     private float playerHeight;
+    private int animatorActiveLayer;
+    private int layer;
     //Constants
     private const float upwardCheckDistance = 1f;
     // Events
     public static event Action<Data> OnPlayerLandedEvent;
     // static 
     public  InteractableBase currentInteractable;
+    public int Layer { get { return layer; } set { layer = value; } }
     public bool IsSliding
     {
         get
@@ -131,7 +149,6 @@ public class PlayerStateMachine : AnimatorBrain<eAnimation>
     public float TimeToCrouch => timeToCrouch;
     public float CrouchHeight => crouchHeight;
     public bool IsSprinting => isSprinting;
-    public bool Interacted => interacted;
     public bool CanInteract => canInteract;
     public bool AbleToInteract => ableToInteract;
     public bool IsInteracting
@@ -145,6 +162,8 @@ public class PlayerStateMachine : AnimatorBrain<eAnimation>
             isInteracting = value;
         }
     }
+    public bool Interacted { get { return interacted;}set { interacted = value; }}
+    public bool IsAdsing { get { return isAdsing; } set { isAdsing = value; } }
     public float WalkSpeed => walkSpeed;
     public float SprintSpeed => sprintSpeed;
     public float SlopeSpeed => slopeSpeed;
@@ -191,8 +210,12 @@ public class PlayerStateMachine : AnimatorBrain<eAnimation>
         get { return isCrouched; }
         set { isCrouched = value; }
     }
+    public bool IsSwitchingItem { get { return isSwitchingItem; } set { isSwitchingItem = false; } }
+    public int AnimatorActiveLayer { get { return animatorActiveLayer; } set { animatorActiveLayer = value; } }
+    public Animator FPS_Animator => fps_Animator;
     public PlayerState PlayerState { get { return playerState; }set { playerState = value; } }
     public static PlayerInput Playerinput => _playerinput;
+    public InputReader _InputReader { get { return _inputReader; } set { _inputReader = value;} }
     private void Awake()
     {
         if (instance == null)
@@ -204,12 +227,11 @@ public class PlayerStateMachine : AnimatorBrain<eAnimation>
             _characterController = gameObject.GetComponent<CharacterController>();
             playerHeight = _characterController.height;
         }
+        _headBob = GetComponent<HeadBob>();
         _inputReader = GetComponent<InputReader>();
         _playerinput = GetComponent<PlayerInput>();
-        AnimatorBrainInit(FPS_Animator.layerCount, FPS_Animator, eAnimation.Idle);
         _states = new StateFactory(this);
-        _currentState = _states.Idle();
-        _currentState.EnterState();
+      
     }
     private void OnEnable()
     {
@@ -232,6 +254,9 @@ public class PlayerStateMachine : AnimatorBrain<eAnimation>
     }
     private void Start()
     {
+        AnimatorBrainInit(fps_Animator.layerCount, fps_Animator, eAnimation.Idle);
+        _currentState = _states.Idle();
+        _currentState.EnterState();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -272,8 +297,11 @@ public class PlayerStateMachine : AnimatorBrain<eAnimation>
     }
     public void FPSControl()
     {
-        moveSpeed = isCrouched ? crouchingSpeed : isSprinting ? sprintSpeed : walkSpeed;
+        moveSpeed = isCrouched ? crouchingSpeed : isSprinting&&!isAdsing ? sprintSpeed : walkSpeed;
         moveDirection = (transform.forward * inputMoveDirection.y * moveSpeed + transform.right * inputMoveDirection.x * moveSpeed * 0.7f + Vector3.down * _characterController.height / 2 * slopeSpeed);
+        if (moveDirection.magnitude > 2) {
+            _headBob.PlayMotion(moveSpeed* headBobSpeed);
+        }
     }
   
     public void Land()
@@ -293,7 +321,7 @@ public class PlayerStateMachine : AnimatorBrain<eAnimation>
         else if (isGrounded && isAirBorn)
         {
             isJumping = false;
-            AnimatorBrainPlay(eAnimation.Land, 0, true, false, 0.2f);
+            AnimatorBrainPlay(eAnimation.Land, PlayerStateMachine.instance.layer, true, false, 0.08f);
             if (ActiveTerrainTexture != null && ActiveTerrainTexture.name.Contains("water"))
             {
                 floorAudio = "WaterSplash";

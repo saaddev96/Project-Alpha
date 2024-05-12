@@ -89,6 +89,60 @@ public partial class @CustomInputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Primary"",
+                    ""type"": ""Button"",
+                    ""id"": ""b0b94deb-0d0c-43a7-a893-ee90032bfe5a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""BareHands"",
+                    ""type"": ""Button"",
+                    ""id"": ""1377ca0a-72fc-4641-9eec-d50db82c9593"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Inspect"",
+                    ""type"": ""Button"",
+                    ""id"": ""c0e25c84-f96a-498f-b32b-39dd5c87312e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Ads"",
+                    ""type"": ""Button"",
+                    ""id"": ""8ee3d82c-2903-4711-bc4f-a54e417e7138"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Fire"",
+                    ""type"": ""Button"",
+                    ""id"": ""80e788ad-3dda-4ba0-a5be-40ab3206ecb2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Reload"",
+                    ""type"": ""Button"",
+                    ""id"": ""ff372348-d0fa-4f7f-8ac4-cb8ca0cabb27"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -212,6 +266,72 @@ public partial class @CustomInputs: IInputActionCollection2, IDisposable
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a926a1e7-4467-46a2-ba5e-e32b2dc31c0e"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Primary"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""59542cab-ca53-4215-b808-9f47ead32493"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BareHands"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""be544c26-46c6-434f-82ea-b06d3ea76eb7"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Inspect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""19390f6e-ed7c-4ec1-bb56-82326908da73"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Ads"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""312b57c2-11d0-42ac-a3e0-d84bd905ff06"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5b968e06-7fc3-466d-a051-79fa2e21b9d4"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reload"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -255,6 +375,12 @@ public partial class @CustomInputs: IInputActionCollection2, IDisposable
         m_GamePlay_Crouch = m_GamePlay.FindAction("Crouch", throwIfNotFound: true);
         m_GamePlay_Pause = m_GamePlay.FindAction("Pause", throwIfNotFound: true);
         m_GamePlay_Interact = m_GamePlay.FindAction("Interact", throwIfNotFound: true);
+        m_GamePlay_Primary = m_GamePlay.FindAction("Primary", throwIfNotFound: true);
+        m_GamePlay_BareHands = m_GamePlay.FindAction("BareHands", throwIfNotFound: true);
+        m_GamePlay_Inspect = m_GamePlay.FindAction("Inspect", throwIfNotFound: true);
+        m_GamePlay_Ads = m_GamePlay.FindAction("Ads", throwIfNotFound: true);
+        m_GamePlay_Fire = m_GamePlay.FindAction("Fire", throwIfNotFound: true);
+        m_GamePlay_Reload = m_GamePlay.FindAction("Reload", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Return = m_UI.FindAction("Return", throwIfNotFound: true);
@@ -326,6 +452,12 @@ public partial class @CustomInputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_GamePlay_Crouch;
     private readonly InputAction m_GamePlay_Pause;
     private readonly InputAction m_GamePlay_Interact;
+    private readonly InputAction m_GamePlay_Primary;
+    private readonly InputAction m_GamePlay_BareHands;
+    private readonly InputAction m_GamePlay_Inspect;
+    private readonly InputAction m_GamePlay_Ads;
+    private readonly InputAction m_GamePlay_Fire;
+    private readonly InputAction m_GamePlay_Reload;
     public struct GamePlayActions
     {
         private @CustomInputs m_Wrapper;
@@ -337,6 +469,12 @@ public partial class @CustomInputs: IInputActionCollection2, IDisposable
         public InputAction @Crouch => m_Wrapper.m_GamePlay_Crouch;
         public InputAction @Pause => m_Wrapper.m_GamePlay_Pause;
         public InputAction @Interact => m_Wrapper.m_GamePlay_Interact;
+        public InputAction @Primary => m_Wrapper.m_GamePlay_Primary;
+        public InputAction @BareHands => m_Wrapper.m_GamePlay_BareHands;
+        public InputAction @Inspect => m_Wrapper.m_GamePlay_Inspect;
+        public InputAction @Ads => m_Wrapper.m_GamePlay_Ads;
+        public InputAction @Fire => m_Wrapper.m_GamePlay_Fire;
+        public InputAction @Reload => m_Wrapper.m_GamePlay_Reload;
         public InputActionMap Get() { return m_Wrapper.m_GamePlay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -367,6 +505,24 @@ public partial class @CustomInputs: IInputActionCollection2, IDisposable
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
+            @Primary.started += instance.OnPrimary;
+            @Primary.performed += instance.OnPrimary;
+            @Primary.canceled += instance.OnPrimary;
+            @BareHands.started += instance.OnBareHands;
+            @BareHands.performed += instance.OnBareHands;
+            @BareHands.canceled += instance.OnBareHands;
+            @Inspect.started += instance.OnInspect;
+            @Inspect.performed += instance.OnInspect;
+            @Inspect.canceled += instance.OnInspect;
+            @Ads.started += instance.OnAds;
+            @Ads.performed += instance.OnAds;
+            @Ads.canceled += instance.OnAds;
+            @Fire.started += instance.OnFire;
+            @Fire.performed += instance.OnFire;
+            @Fire.canceled += instance.OnFire;
+            @Reload.started += instance.OnReload;
+            @Reload.performed += instance.OnReload;
+            @Reload.canceled += instance.OnReload;
         }
 
         private void UnregisterCallbacks(IGamePlayActions instance)
@@ -392,6 +548,24 @@ public partial class @CustomInputs: IInputActionCollection2, IDisposable
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
+            @Primary.started -= instance.OnPrimary;
+            @Primary.performed -= instance.OnPrimary;
+            @Primary.canceled -= instance.OnPrimary;
+            @BareHands.started -= instance.OnBareHands;
+            @BareHands.performed -= instance.OnBareHands;
+            @BareHands.canceled -= instance.OnBareHands;
+            @Inspect.started -= instance.OnInspect;
+            @Inspect.performed -= instance.OnInspect;
+            @Inspect.canceled -= instance.OnInspect;
+            @Ads.started -= instance.OnAds;
+            @Ads.performed -= instance.OnAds;
+            @Ads.canceled -= instance.OnAds;
+            @Fire.started -= instance.OnFire;
+            @Fire.performed -= instance.OnFire;
+            @Fire.canceled -= instance.OnFire;
+            @Reload.started -= instance.OnReload;
+            @Reload.performed -= instance.OnReload;
+            @Reload.canceled -= instance.OnReload;
         }
 
         public void RemoveCallbacks(IGamePlayActions instance)
@@ -464,6 +638,12 @@ public partial class @CustomInputs: IInputActionCollection2, IDisposable
         void OnCrouch(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnPrimary(InputAction.CallbackContext context);
+        void OnBareHands(InputAction.CallbackContext context);
+        void OnInspect(InputAction.CallbackContext context);
+        void OnAds(InputAction.CallbackContext context);
+        void OnFire(InputAction.CallbackContext context);
+        void OnReload(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

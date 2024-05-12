@@ -6,22 +6,22 @@ using UnityEngine;
 public class BareHands : Weapon
 {
 
-    protected override void OnActive()
+
+
+    public override void OnInactive()
     {
+        base.OnInactive();
 
     }
 
-    protected override void OnInactive()
+    public override void OnInteract()
     {
-
-    }
-
-    protected override void OnInteract()
-    {
-
+        base.OnInteract();
     }
 
     protected override void OnMouseOver()
     {
     }
+
+    
 }

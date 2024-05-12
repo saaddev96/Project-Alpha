@@ -4,16 +4,26 @@ using UnityEngine;
 
 public abstract class InteractableBase : MonoBehaviour
 {
-    protected float timeToInteract;
-    protected string interactableName;
+    [SerializeField] protected float timeToInteract;
+    [SerializeField] protected string interactableName;
     protected float elapsedTime;
     protected float fillAmount;
     protected PlayerStateMachine playerStateMachine;
+    protected bool isComplete = false;
     public void Awake()
     {
         playerStateMachine = FindObjectOfType<PlayerStateMachine>();
     }
-    public abstract void OnInteract();
+    public abstract void InteractCompleted();
+    public  void OnInteract()
+    {
+        elapsedTime = 0;
+        fillAmount = 0;
+        UiManager.Instance.InteractBG.gameObject.SetActive(true);
+        UiManager.Instance.InteractFill.fillAmount = fillAmount;
+        playerStateMachine.IsInteracting = true;
+        isComplete = false;
+    }
     public void OnInteracterEnter()
     {
         UiManager.Instance.InteractText.gameObject.SetActive(true);
@@ -36,10 +46,14 @@ public abstract class InteractableBase : MonoBehaviour
     }
     void OnInteractingFinished()
     {
-        if (fillAmount >= 0.99f)
+        if (fillAmount >= 1.0f)
         {
             OnInteractingExit();
-   
+            if (!isComplete)
+            {
+                InteractCompleted();
+                isComplete = true;
+            }
         }
     }
 
