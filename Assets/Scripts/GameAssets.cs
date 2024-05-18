@@ -16,5 +16,6 @@ public class GameAssets : MonoBehaviour
     }
     [Header("Player Related Sounds")]
     public GameSound PlayerSounds;
-
+    [Header("Beretta Related Sounds")]
+    public GameSound berettaPistol;
 }

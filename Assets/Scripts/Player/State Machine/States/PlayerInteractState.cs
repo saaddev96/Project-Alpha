@@ -27,7 +27,7 @@ public class PlayerInteractState : PlayerBaseState
     public override void EnterState()
     {
         ctx.PlayerState = PlayerState.Interacting;
-        interactableBase = ctx.currentInteractable;
+        interactableBase = ctx.CurrentInteractable;
         interactableBase.OnInteract();
         interactableBase.OnInteracterExit();
         ctx.Interacted = false;

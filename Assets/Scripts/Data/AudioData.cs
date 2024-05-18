@@ -4,7 +4,11 @@ using System.Collections;
 [System.Serializable]
 public class AudioData : Data
 {
+    public AudioData(AudioSource source)
+    {
+        aSource = source;
+    }
     public AudioClip clip;
-    public AudioSource aSource;
+    [HideInInspector]public AudioSource aSource;
     public float volume;
 }

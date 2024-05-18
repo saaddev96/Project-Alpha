@@ -14,6 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sounds:
   - soundName: Land
-    clip: {fileID: 8300000, guid: 99892e95e66c3524399af1393f0530ac, type: 3}
+    data:
+      clip: {fileID: 8300000, guid: 7d2daae419d9c694d8f6690d14f940c5, type: 3}
+      aSource: {fileID: 0}
+      volume: 0.5
   - soundName: WaterSplash
-    clip: {fileID: 8300000, guid: 215cb2af2c3b02a45babe25e08e4b051, type: 3}
+    data:
+      clip: {fileID: 8300000, guid: 215cb2af2c3b02a45babe25e08e4b051, type: 3}
+      aSource: {fileID: 0}
+      volume: 0.5

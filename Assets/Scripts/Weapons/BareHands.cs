@@ -3,25 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class BareHands : Weapon
+public class BareHands : Item
 {
-
-
+    private void OnEnable()
+    {
+    }
+    public override void OnActive()
+    {
+        this.gameObject.SetActive(true);
+    }
 
     public override void OnInactive()
     {
-        base.OnInactive();
+        this.gameObject.SetActive(false);
 
     }
 
     public override void OnInteract()
     {
-        base.OnInteract();
+     
     }
 
     protected override void OnMouseOver()
     {
     }
 
-    
+
 }

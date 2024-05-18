@@ -15,13 +15,13 @@ public class SoundManager : Singleton<SoundManager>
     {
         PlayerStateMachine.OnPlayerLandedEvent += HandleData;
         Footsteps.OnPlayerStepEvent += HandleData;
-        Beretta.currentItemSoundEvent+= HandleData;
+        Weapon.currentItemSoundEvent+= HandleData;
     }
     private void OnDisable()
     {
         PlayerStateMachine.OnPlayerLandedEvent -= HandleData;
         Footsteps.OnPlayerStepEvent -= HandleData;
-        Beretta.currentItemSoundEvent -= HandleData;
+        Weapon.currentItemSoundEvent -= HandleData;
     }
  
 

@@ -24,6 +24,10 @@ public class HeadBob : MonoBehaviour
     private void Awake()
     {
         footsteps = GetComponent<Footsteps>();
+       
+    }
+    private void Start()
+    {
         startPos = cameraCtrler.localPosition;
         LeftHandStartRot = HandsCtrlerLeft.localRotation;
         RightHandStartRot = HandsCtrlerRight.localRotation;
@@ -35,8 +39,8 @@ public class HeadBob : MonoBehaviour
         float sin = Mathf.Sin(Time.time * freqY * speed);
         float cos = Mathf.Cos(Time.time * freqX * speed);
         PlayerFootSteps(cos);
-        pos.y += sin * amplitudeY / 10000* speed;
-        pos.x += cos * amplitudeX / 10000* speed;
+        pos.y += sin * amplitudeY / 1000000* speed;
+        pos.x += cos * amplitudeX / 1000000* speed;
         if (PlayerStateMachine.instance.IsAdsing)
         {
             pos /= 20;
@@ -74,15 +78,15 @@ public class HeadBob : MonoBehaviour
     {
         ResetPos();
         ResetRot();
-        cameraCtrler.LookAt(Focusing());
+        //cameraCtrler.LookAt(Focusing());
     }
     public void PlayMotion(float speed)
     {
         if (!canHeadBob) return;
         cameraCtrler.localPosition += StepMotion(speed);
         if (isAds) return;
-        HandsCtrlerLeft.localRotation = StepRotation(speed);
-        HandsCtrlerRight.localRotation = StepRotation(-speed);
+        HandsCtrlerLeft.localRotation = Quaternion.Lerp(HandsCtrlerLeft.localRotation, StepRotation(speed), 4 * Time.deltaTime);
+        HandsCtrlerRight.localRotation = Quaternion.Lerp(HandsCtrlerRight.localRotation, StepRotation(-speed), 4 * Time.deltaTime);
     }
     public void ResetPos()
     {
@@ -94,6 +98,6 @@ public class HeadBob : MonoBehaviour
     {
         if (HandsCtrlerLeft.localRotation == LeftHandStartRot && HandsCtrlerRight.localRotation == RightHandStartRot) return;
         HandsCtrlerLeft.localRotation = Quaternion.Lerp(HandsCtrlerLeft.localRotation, LeftHandStartRot, 4 * Time.deltaTime);
-        HandsCtrlerRight.localRotation = Quaternion.Lerp(HandsCtrlerRight.localRotation, RightHandStartRot, 4 * Time.deltaTime);
+        HandsCtrlerRight.localRotation = Quaternion.Lerp(HandsCtrlerRight.localRotation, RightHandStartRot, 4* Time.deltaTime);
     }
 }

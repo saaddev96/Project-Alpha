@@ -45,10 +45,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerSounds: {fileID: 11400000, guid: 164904b876c2eb44f9a9c36bbfb5628f, type: 2}
-  ConcreteSound: {fileID: 11400000, guid: 13a7f3d7a91dbc1478e57a1df0d0f7b6, type: 2}
-  GrassSound: {fileID: 11400000, guid: 33e7850b1ae6f2b43a4a920c7626790f, type: 2}
-  MetalSound: {fileID: 11400000, guid: 797a96cecfb09a34faed8f71a568a23e, type: 2}
-  MudSound: {fileID: 11400000, guid: 96e469450a36e794fbced76112dffe7b, type: 2}
-  SnowSound: {fileID: 11400000, guid: 52c12fa9fe5b2554c9242787c7fa422a, type: 2}
-  WaterSound: {fileID: 11400000, guid: 3cefd3369c28d1f4980c7b18bf23419d, type: 2}
-  WoodSound: {fileID: 11400000, guid: 4539a1b26f535b24baeb2f21c4762816, type: 2}
+  berettaPistol: {fileID: 11400000, guid: 475518e99f724e6479657f95a1509779, type: 2}

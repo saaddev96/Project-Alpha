@@ -4,15 +4,23 @@ using UnityEngine;
 public class GameSound : ScriptableObject
 {
     public Sound[] sounds;
-    public AudioClip GetSoundClip(string soundname)
+    public AudioData GetSoundClip(string soundname,AudioSource source)
     {
         Sound sound = Array.Find(sounds, s => s.soundName == soundname);
-        return sound.clip;
+        sound.data.aSource = source;
+        return sound.data;
+    }
+    public AudioData GetSoundClip(Enum state, AudioSource source)
+    {
+        Sound sound = Array.Find(sounds, s => s.soundName == state.ToString());
+        sound.data.aSource = source;
+        return sound.data;
     }
     [System.Serializable]
     public struct Sound
     {
         public string soundName;
-        public AudioClip clip;
+        public AudioData data;
     } 
+
 }

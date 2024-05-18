@@ -43,7 +43,7 @@ MonoBehaviour:
   Arm_animation: 0
   locklayer: 0
   crossfade: 0
-  Item_animation: 7
+  Item_animation: 6
 --- !u!114 &-7748159121287201660
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -60,33 +60,7 @@ MonoBehaviour:
   Arm_animation: 0
   locklayer: 0
   crossfade: 0
-  Item_animation: 7
---- !u!1102 &-7075555997183953297
-AnimatorState:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: IdleAds
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions: []
-  m_StateMachineBehaviours: []
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 1
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 7f2c0eee3740e0142a5699fcbc6a6d86, type: 2}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: 
+  Item_animation: 6
 --- !u!114 &-6384379114690512593
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -199,7 +173,7 @@ MonoBehaviour:
   Arm_animation: 0
   locklayer: 0
   crossfade: 0.08
-  Item_animation: 7
+  Item_animation: 6
 --- !u!114 &-2793330036285095229
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -245,17 +219,14 @@ AnimatorStateMachine:
     m_State: {fileID: 3088713845463748536}
     m_Position: {x: 230, y: -60, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: -7075555997183953297}
+    m_State: {fileID: 7350129344852504021}
     m_Position: {x: 230, y: 310, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: 7350129344852504021}
+    m_State: {fileID: 6842044836294207804}
     m_Position: {x: 230, y: 360, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: 6842044836294207804}
-    m_Position: {x: 230, y: 410, z: 0}
-  - serializedVersion: 1
     m_State: {fileID: 5331191159221329550}
-    m_Position: {x: 230, y: 460, z: 0}
+    m_Position: {x: 230, y: 420, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -5481037411276396410}
     m_Position: {x: 230, y: 50, z: 0}
@@ -368,7 +339,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 0}
+  m_Motion: {fileID: 7400000, guid: 291fda678b51afb42ba3011e9aa8721a, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -390,7 +361,7 @@ MonoBehaviour:
   Arm_animation: 0
   locklayer: 0
   crossfade: 0.08
-  Item_animation: 7
+  Item_animation: 6
 --- !u!1102 &5331191159221329550
 AnimatorState:
   serializedVersion: 6

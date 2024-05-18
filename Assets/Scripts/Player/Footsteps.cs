@@ -22,11 +22,11 @@ public class Footsteps : MonoBehaviour
     public static event Action<Data> OnPlayerStepEvent;
     public static Texture ActiveTerrainTexture;
 
-    private AudioData footstepsAudioData = new AudioData();
+    private AudioData footstepsAudioData;
 
     private void Start()
     {
-
+        footstepsAudioData = new AudioData(FootSoundSource);
         StartCoroutine(GroundChecking());
     }
 
@@ -100,9 +100,7 @@ public class Footsteps : MonoBehaviour
     {
         if (footStepSound != null)
         {
-            //OnPlayerStepEvent.Invoke(new AudioData { clip = footStepSound.FootSteps[soundIteration], aSource = FootSoundSource, volume = footStepsVolume });
             footstepsAudioData.clip = footStepSound.FootSteps[soundIteration];
-            footstepsAudioData.aSource = FootSoundSource;
             footstepsAudioData.volume = footStepsVolume;
             OnPlayerStepEvent.Invoke(footstepsAudioData);
             if (footStepSound.FootSteps.Count-1 > soundIteration)

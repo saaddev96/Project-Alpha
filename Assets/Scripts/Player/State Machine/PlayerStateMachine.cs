@@ -2,21 +2,17 @@ using UnityEngine;
 using System;
 using UnityEngine.InputSystem;
 using System.Threading.Tasks;
+using Cinemachine;
 public enum eAnimation
 {
     Draw,
     Holster,
     Idle,
-    Walk,
-    Sprint,
-    Crouch,
     Jump,
     Land,
     Interact,
     Inspect,
     Ads,
-    AdsWalk,
-    AdsCrouch,
     Fire,
     FireAds,
     Reload,
@@ -39,7 +35,7 @@ public class PlayerStateMachine : AnimatorBrain<eAnimation>
     public static PlayerStateMachine instance;
     private HeadBob _headBob;
     [Header("Player State")]
-    [SerializeField]private PlayerState playerState = PlayerState.None;
+    [SerializeField] private PlayerState playerState = PlayerState.None;
     [Space]
     [Header("Functional Parameters")]
     [SerializeField] private bool canSprinte;
@@ -68,7 +64,7 @@ public class PlayerStateMachine : AnimatorBrain<eAnimation>
     [SerializeField] private float slopeSpeed;
     [Space]
     [Header("HeadBob Parameters")]
-    [SerializeField,Range(0.1f,1)] private float headBobSpeed;
+    [SerializeField, Range(0.1f, 1)] private float headBobSpeed;
     [Space]
     [Header("Raycast Layer")]
     [SerializeField] private LayerMask groundMask;
@@ -76,14 +72,16 @@ public class PlayerStateMachine : AnimatorBrain<eAnimation>
 
     [Header("Character Animator")]
     [SerializeField] private Animator fps_Animator;
+    [SerializeField] private CinemachineVirtualCamera fps_VCamera;
     // public readonly fields
     public bool IsPlayerMoving => isMoving;
-    [HideInInspector]public Vector3 moveDirection;
+    [HideInInspector] public Vector3 moveDirection;
 
     // private Field
     private CharacterController _characterController;
     private InputReader _inputReader;
     private static PlayerInput _playerinput;
+    
     private Vector2 inputMoveDirection;
     private float angle;
     private string floorAudio;
@@ -99,7 +97,7 @@ public class PlayerStateMachine : AnimatorBrain<eAnimation>
     private bool isAdsing = false;
     private Vector3 groundCheckHitnormal;
     private Vector3 groundCheckHitPoint;
-    private AudioData LandAudioData = new AudioData();
+    private AudioData LandAudioData;
     private float moveSpeed;
     private float playerHeight;
     private int animatorActiveLayer;
@@ -109,18 +107,18 @@ public class PlayerStateMachine : AnimatorBrain<eAnimation>
     // Events
     public static event Action<Data> OnPlayerLandedEvent;
     // static 
-    public  InteractableBase currentInteractable;
+    private InteractableBase currentInteractable;
     public int Layer { get { return layer; } set { layer = value; } }
     public bool IsSliding
     {
         get
         {
-            if (Physics.Raycast(transform.position,Vector3.down, out RaycastHit slopHit,2f, groundMask))
+            if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit slopHit, 2f, groundMask))
             {
                 groundCheckHitnormal = slopHit.normal;
                 groundCheckHitPoint = slopHit.point;
                 angle = Vector3.Angle(groundCheckHitnormal, Vector3.up);
-                return angle > _characterController.slopeLimit && isGrounded && angle<80;
+                return angle > _characterController.slopeLimit && isGrounded && angle < 80;
 
             }
             else
@@ -162,7 +160,7 @@ public class PlayerStateMachine : AnimatorBrain<eAnimation>
             isInteracting = value;
         }
     }
-    public bool Interacted { get { return interacted;}set { interacted = value; }}
+    public bool Interacted { get { return interacted; } set { interacted = value; } }
     public bool IsAdsing { get { return isAdsing; } set { isAdsing = value; } }
     public float WalkSpeed => walkSpeed;
     public float SprintSpeed => sprintSpeed;
@@ -195,7 +193,7 @@ public class PlayerStateMachine : AnimatorBrain<eAnimation>
     public Vector3 GroundCheckHitnormal => groundCheckHitnormal;
     public Vector3 GroundCheckHitpoint => groundCheckHitPoint;
     public float MoveSpeed => moveSpeed;
-    public bool IsAirBorn { 
+    public bool IsAirBorn {
         get
         {
             return isAirBorn;
@@ -213,9 +211,11 @@ public class PlayerStateMachine : AnimatorBrain<eAnimation>
     public bool IsSwitchingItem { get { return isSwitchingItem; } set { isSwitchingItem = false; } }
     public int AnimatorActiveLayer { get { return animatorActiveLayer; } set { animatorActiveLayer = value; } }
     public Animator FPS_Animator => fps_Animator;
-    public PlayerState PlayerState { get { return playerState; }set { playerState = value; } }
+    public PlayerState PlayerState { get { return playerState; } set { playerState = value; } }
     public static PlayerInput Playerinput => _playerinput;
-    public InputReader _InputReader { get { return _inputReader; } set { _inputReader = value;} }
+    public InputReader _InputReader { get { return _inputReader; } set { _inputReader = value; } }
+    public CinemachineVirtualCamera  FPS_VCamera { get { return fps_VCamera;}set { fps_VCamera = value; } }
+    public InteractableBase CurrentInteractable { get { return currentInteractable; } set { currentInteractable = value; } }
     private void Awake()
     {
         if (instance == null)
@@ -254,6 +254,7 @@ public class PlayerStateMachine : AnimatorBrain<eAnimation>
     }
     private void Start()
     {
+        LandAudioData = new AudioData(feetAudioSource);
         AnimatorBrainInit(fps_Animator.layerCount, fps_Animator, eAnimation.Idle);
         _currentState = _states.Idle();
         _currentState.EnterState();
@@ -330,9 +331,7 @@ public class PlayerStateMachine : AnimatorBrain<eAnimation>
             {
                 floorAudio = "Land";
             }
-            LandAudioData.clip = GameAssets.Instance.PlayerSounds.GetSoundClip(floorAudio);
-            LandAudioData.aSource = feetAudioSource;
-            LandAudioData.volume = 0.1f;
+            LandAudioData = GameAssets.Instance.PlayerSounds.GetSoundClip(floorAudio,feetAudioSource);
             OnPlayerLandedEvent?.Invoke(LandAudioData);
             isAirBorn = false;
         }

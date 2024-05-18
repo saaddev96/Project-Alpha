@@ -17,9 +17,7 @@ public enum eItemAnimation
 }
 public abstract class Item : AnimatorBrain<eItemAnimation>
 {
-    [SerializeField] protected  string itemName;
     [SerializeField] protected int itemLayer;
-    public string ItemName => itemName;
     protected Animator Fps_anim => PlayerStateMachine.instance.FPS_Animator;
     protected Animator item_Anim;
     protected AnimatorBrain<eAnimation> Arm_animatorbrain => (AnimatorBrain<eAnimation>)PlayerStateMachine.instance;
@@ -30,11 +28,10 @@ public abstract class Item : AnimatorBrain<eItemAnimation>
     public abstract void OnActive();
     public abstract void OnInactive();
 
-    private void Awake()
+    public virtual void Awake()
     {
         item_Anim = GetComponent<Animator>();
     }
-
     public virtual IEnumerator DrawItem()
     {
 

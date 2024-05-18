@@ -15,7 +15,7 @@ public class InputReader : MonoBehaviour
     public event Action OnBareHandsSelectedEvent;
     public event Action InspectEvent;
     public event Action<bool> AdsEvent;
-    public event Action FireEvent;
+    public event Action<bool> FireEvent;
     public event Action ReloadEvent;
     public void OnLook(InputAction.CallbackContext context)
     {
@@ -100,7 +100,11 @@ public class InputReader : MonoBehaviour
     {
         if (context.performed)
         {
-            FireEvent?.Invoke();
+            FireEvent?.Invoke(true);
+        }
+        else if (context.canceled)
+        {
+            FireEvent?.Invoke(false);
         }
     }
     public void OnReload(InputAction.CallbackContext context)

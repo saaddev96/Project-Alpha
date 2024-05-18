@@ -66,18 +66,17 @@ public class PlayerWalkState : PlayerBaseState
             ctx.FPSControl();
             if (ctx.IsSprinting && !ctx.IsCrouched&& !ctx.IsAdsing)
             {
+                
                 ctx.AnimatorBrainPlay(eAnimation.Idle, ctx.Layer, false, false);
             }
             else if (ctx.IsCrouched)
             {
                 if (PlayerStateMachine.instance.IsAdsing)
                 {
-                    //ctx.AnimatorBrainPlay(eAnimation.AdsCrouch, ctx.Layer, false, false,0.08f);
                     ctx.AnimatorBrainPlay(eAnimation.Ads, ctx.Layer, false, false, 0.08f);
                 }
                 else
                 {
-                    //ctx.AnimatorBrainPlay(eAnimation.Crouch, ctx.Layer, false, false);
                     ctx.AnimatorBrainPlay(eAnimation.Idle, ctx.Layer, false, false, 0.08f);
                 }
             }
@@ -85,13 +84,10 @@ public class PlayerWalkState : PlayerBaseState
             {
                 if (PlayerStateMachine.instance.IsAdsing)
                 {
-                    //ctx.AnimatorBrainPlay(eAnimation.AdsWalk, ctx.Layer, false, false, 0.08f);
                     ctx.AnimatorBrainPlay(eAnimation.Ads, ctx.Layer, false, false, 0.08f);
                 }
                 else
                 {
-
-                    //ctx.AnimatorBrainPlay(eAnimation.Walk, ctx.Layer, false, false);
                     ctx.AnimatorBrainPlay(eAnimation.Idle, ctx.Layer, false, false, 0.08f);
                 }
             }
