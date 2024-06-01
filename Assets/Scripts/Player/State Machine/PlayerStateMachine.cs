@@ -73,6 +73,7 @@ public class PlayerStateMachine : AnimatorBrain<eAnimation>
     [Header("Character Animator")]
     [SerializeField] private Animator fps_Animator;
     [SerializeField] private CinemachineVirtualCamera fps_VCamera;
+    [SerializeField] private Camera fps_WeaponCamera;
     // public readonly fields
     public bool IsPlayerMoving => isMoving;
     [HideInInspector] public Vector3 moveDirection;
@@ -215,6 +216,7 @@ public class PlayerStateMachine : AnimatorBrain<eAnimation>
     public static PlayerInput Playerinput => _playerinput;
     public InputReader _InputReader { get { return _inputReader; } set { _inputReader = value; } }
     public CinemachineVirtualCamera  FPS_VCamera { get { return fps_VCamera;}set { fps_VCamera = value; } }
+    public Camera FPS_WeaponCamera { get { return fps_WeaponCamera; } set { fps_WeaponCamera = value; } }
     public InteractableBase CurrentInteractable { get { return currentInteractable; } set { currentInteractable = value; } }
     private void Awake()
     {

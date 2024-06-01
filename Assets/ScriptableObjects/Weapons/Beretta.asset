@@ -18,12 +18,18 @@ MonoBehaviour:
   bullet: {fileID: 2140409970624122400, guid: ef398838175c75f46aed9e6c46b21570, type: 3}
   WeaponSounds: {fileID: 11400000, guid: 475518e99f724e6479657f95a1509779, type: 2}
   bulletCount: 1000
-  magSize: 16
-  maxFiringDistance: 75
-  bulletSpeed: 250
+  magSize: 8
+  maxFiringDistance: 2500
+  bulletSpeed: 400
   PelletsCount: 10
   aimConeAngle: 8
   fireRate: 10
   BurstBulletCount: 3
-  shakePower: 5
+  recoilX: -2
+  recoilY: 2
+  recoilZ: 0.2
+  recoilSnapinessSpeed: 6
+  recoilRecoverSpeed: 1
+  hipFireRecoilMultiplier: 2
+  shakePower: 2
   AdsFOV: 45

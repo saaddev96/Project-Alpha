@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Cinemachine;
-public  class Weapon : Item
+[RequireComponent(typeof(AttachmentHandler))]
+public class Weapon : Item
 {
     public enum eWeaponStates
     {
@@ -16,25 +17,41 @@ public  class Weapon : Item
         CockingEndState,
         MagEjectState,
         MagInjectState,
-        HolsterState
+        HolsterState,
+        MagEmptyState
     }
 
     // Serialized Fields 
     [Header("Functional Setting")]
+    [Space]
     [SerializeField] private WeaponType weapon;
     [SerializeField] private bool canFire = true;
-    [SerializeField]private bool audioMute = false;
+    [SerializeField] private bool audioMute = false;
+    [Space]
+    [Header("Bullet Fire Origin")]
+    [Space]
     [SerializeField] private Transform firingOrigin;
+    [Space]
+    [Header("Item Audio Source")]
+    [Space]
     [SerializeField] private AudioSource audioSource;
+    [Space]
+    [Header("Effects Prefabs")]
+    [Space]
     [SerializeField] private GameObject muzzleFlash;
     [SerializeField] private GameObject bulletShell;
-    private bool IsShotGun => weapon.isShotGun;
-    private bool IsAuto => weapon.isAuto;
-    private bool IsBurst => weapon.isBurst;
+
+
+    private bool IsShotGun;
+    private bool IsAuto;
+    private bool IsBurst;
+    private Transform sightOrigin;
+
+    public Transform SightOrigin { get { return sightOrigin; } set { sightOrigin = value; } }
     private int BulletCount => weapon.bulletCount;
 
-    private int MagSize=> weapon.magSize;
-    private GameObject Bullet=> weapon.bullet;
+    private int MagSize => weapon.magSize;
+    private GameObject Bullet => weapon.bullet;
     private float MaxFiringDistance => weapon.maxFiringDistance;
     private float BulletSpeed => weapon.bulletSpeed;
     private int PelletsCount => weapon.PelletsCount;
@@ -51,11 +68,13 @@ public  class Weapon : Item
     private bool isTriggerOn = false;
     private bool isReloading = false;
     private bool fired = false;
+    private bool isInspecting;
+    private bool IsSlideOut;
+    private bool hasSilencer = false;
     private int bulletFired = 0;
     private int bulletsOnMag;
     private Vector3 targetPoint;
-    private bool isInspecting;
-    private bool IsSlideOut;
+    private AttachmentHandler w_attachmentHandler;
     private float timeToFireAgain => 1 / FireRate;// bullet/s
     private bool isAbleToShootAgain => firingTimer <= 0;
     private bool CanReload => bulletsOnMag < MagSize && bulletCount > 0 && !isReloading;
@@ -66,10 +85,12 @@ public  class Weapon : Item
     private Recoil recoil;
     public bool IsTriggerOn => isTriggerOn;
     public bool isAds { get; private set; }
+    public bool HasSilencer { get { return hasSilencer; } set { hasSilencer = value; } }
+    public WeaponType P_WeaponType => weapon;
 
     private void OnEnable()
     {
-        
+
         impulseSource = GetComponent<CinemachineImpulseSource>();
         IsSlideOut = false;
         AnimatorBrainInit(item_Anim.layerCount, item_Anim, eItemAnimation.Idle);
@@ -94,12 +115,11 @@ public  class Weapon : Item
     {
         base.Awake();
         recoil = GameObject.Find("CameraRot/CameraRecoil").GetComponent<Recoil>();
+        w_attachmentHandler = this.gameObject.GetComponent<AttachmentHandler>();
     }
     private void Start()
     {
-        bulletCount = BulletCount;
-        bulletsOnMag = MagSize;
-
+        InitializeWeapon();
     }
     private void Update()
     {
@@ -111,15 +131,27 @@ public  class Weapon : Item
             firingTimer -= Time.deltaTime;
         }
     }
+
+    void InitializeWeapon()
+    {
+        bulletCount = BulletCount;
+        bulletsOnMag = MagSize;
+        IsShotGun = weapon.isShotGun;
+        IsAuto = weapon.isAuto;
+        IsBurst = weapon.isBurst;
+        
+    }
     void AdsCheck()
     {
         if (isAds)
         {
             playerStateMachine.FPS_VCamera.m_Lens.FieldOfView = Mathf.Lerp(playerStateMachine.FPS_VCamera.m_Lens.FieldOfView, (float)AdsFOV, 10 * Time.deltaTime);
+            playerStateMachine.FPS_WeaponCamera.fieldOfView = Mathf.Lerp(playerStateMachine.FPS_WeaponCamera.fieldOfView, 45, 10 * Time.deltaTime);
         }
         else
         {
             playerStateMachine.FPS_VCamera.m_Lens.FieldOfView = Mathf.Lerp(playerStateMachine.FPS_VCamera.m_Lens.FieldOfView, 60, 10 * Time.deltaTime);
+            playerStateMachine.FPS_WeaponCamera.fieldOfView = Mathf.Lerp(playerStateMachine.FPS_WeaponCamera.fieldOfView, 55, 10 * Time.deltaTime);
         }
     }
     void InspectCheck()
@@ -143,27 +175,29 @@ public  class Weapon : Item
     void FireCheck()
     {
         if (!canFire) return;
-        if ((!isFiring && fired || IsAuto && isAbleToShootAgain) && !isReloading && isTriggerOn)
-        {
-            if (IsBurst)
+       
+            if ((!isFiring&& fired || IsAuto && isAbleToShootAgain) && !isReloading && isTriggerOn&& bulletsOnMag > 0)
             {
-
-                IEnumerator Wait(float time)
+                if (IsBurst)
                 {
-                    for (int i = 0; i < BurstBulletCount; i++)
-                    {
-                        Shoot();
-                        yield return new WaitForSeconds(time);
-                    }
-                }
-                StartCoroutine(Wait(timeToFireAgain));
 
+                    IEnumerator Wait(float time)
+                    {
+                        for (int i = 0; i < BurstBulletCount; i++)
+                        {
+                            Shoot();
+                            yield return new WaitForSeconds(time);
+                        }
+                    }
+                    StartCoroutine(Wait(timeToFireAgain));
+
+                }
+                else
+                {
+                    Shoot();
+                }
             }
-            else
-            {
-                Shoot();
-            }
-        }
+        
     }
     public override void OnActive()
     {
@@ -175,15 +209,15 @@ public  class Weapon : Item
         this.gameObject.SetActive(false);
     }
 
-    public override void OnInteract() 
+    public override void OnInteract()
     {
-        
+
     }
-    public  void Inspect()
+    public void Inspect()
     {
         isInspecting = true;
     }
-    public  void Reload()
+    public void Reload()
     {
         if (CanReload)
         {
@@ -219,46 +253,41 @@ public  class Weapon : Item
         bulletCount -= bulletsNeeded;
         isReloading = false;
         IsSlideOut = false;
-        
+
     }
 
-    public  void Fire(bool ctx)
+    public void Fire(bool ctx)
     {
         isTriggerOn = ctx;
         fired = true;
+        if(bulletsOnMag<=0) PlaySound(eWeaponStates.MagEmptyState);
     }
-    public  void Aim(bool ctx)
+    public void Aim(bool ctx)
     {
         playerStateMachine.IsAdsing = ctx;
         isAds = ctx;
     }
     void Shoot()
     {
+
         
-        fired = false;
-        if (bulletsOnMag > 0)
+        PlaySound(eWeaponStates.FireStartState);
+        FiringInstantiation();
+        PlayFiringShake();
+        PlayFiringEffect();
+        PlayFiringAnimation();
+        if (recoil != null)
         {
-
-            PlaySound(eWeaponStates.FireStartState);
-            FiringInstantiation();
-            PlayFiringShake();
-            PlayFiringEffect();
-            PlayFiringAnimation();
-            if (recoil != null)
-            {
             recoil.FireRecoil();
-            }
-            isFiring = true;
-            bulletFired++;
-            bulletsOnMag--;
-            isInspecting = false;
-            firingTimer = timeToFireAgain;
+        }
+        isFiring = true;
+        bulletFired++;
+        bulletsOnMag--;
+        isInspecting = false;
+        firingTimer = timeToFireAgain;
+        fired = false;
 
-        }
-        else
-        {
-            // TODO : notify player that he needs ammo
-        }
+
 
     }
     void FiringInstantiation()
@@ -266,7 +295,18 @@ public  class Weapon : Item
         // Finalizing the Firing  calculating direcftion using Ray and instantiating bullet
         float firingCount = IsShotGun ? PelletsCount : 1;
         float spreadAngle = IsShotGun && isAds ? AimConeAngle / 2 : IsShotGun ? AimConeAngle : AimConeAngle / 10;
-        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        Ray ray;
+        if (isAds)
+        {
+            Vector3 SightPos = Camera.main.WorldToScreenPoint(sightOrigin.position);
+            ray = Camera.main.ScreenPointToRay(new Vector3(SightPos.x, SightPos.y, 0));
+        }
+        else
+        {
+            ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        }
+
+
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
@@ -291,14 +331,15 @@ public  class Weapon : Item
     {
         // Calculate Shake Velocity and Appliying it
         float finalShakePower = IsAuto ? ShakePower / 2 : ShakePower;
-        Vector3 shakeVelocity = new Vector3(0.1f, Camera.main.transform.position.y, Camera.main.transform.position.z)* finalShakePower/100;
+        Vector3 shakeVelocity = new Vector3(0.1f, Camera.main.transform.position.y, Camera.main.transform.position.z) * finalShakePower / 100;
         impulseSource.GenerateImpulseWithVelocity(shakeVelocity);
     }
     void PlayFiringEffect()
     {
         // Playing Effects
-        muzzleFlash.SetActive(true);
         bulletShell.SetActive(true);
+        if(!hasSilencer)
+        muzzleFlash.SetActive(true);
     }
     void PlayFiringAnimation()
     {
@@ -369,5 +410,22 @@ public  class Weapon : Item
 
     protected override void OnMouseOver()
     {
+    }
+
+    private void OnGUI()
+    {
+        GUI.Box(new Rect(25,25,150,150),weapon.name);
+        IsShotGun = GUI.Toggle(new Rect(50, 50, 100, 30), IsShotGun, "  Shotgun");
+        IsAuto = GUI.Toggle(new Rect(50, 100, 100, 30), IsAuto, "  Auto");
+        IsBurst = GUI.Toggle(new Rect(50, 150, 100, 30), IsBurst, "  Burst");
+        GUI.Box(new Rect(200, 25, 150, 150), "Attachments");
+        if(GUI.Button(new Rect(225, 50, 100, 30),"Change Muzzle"))
+        {
+            w_attachmentHandler.ChangeToNext(AttachmentType.Muzzle);
+        }
+        if (GUI.Button(new Rect(225, 100, 100, 30), "Change Sight"))
+        {
+            w_attachmentHandler.ChangeToNext(AttachmentType.Sight);
+        }
     }
 }

@@ -31,6 +31,17 @@ public class WeaponType : ScriptableObject
      public float fireRate = 15;
      public int BurstBulletCount = 3;
 
+    [Header("Recoil Pattern")]
+    public float recoilX= -2f;
+    public float recoilY= 2f;
+    public float recoilZ=0.2f;
+
+    [Header("Recoil Settings")]
+
+    public float recoilSnapinessSpeed = 6f;
+    public float recoilRecoverSpeed = 1f;
+    public float hipFireRecoilMultiplier = 2f;
+
     [Header("Camera Shake Setting")]
 
     [Range(0,10)] public float shakePower = 1f;

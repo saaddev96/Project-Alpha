@@ -1,0 +1,25 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class IronSight : Attachment
+{
+    [SerializeField] private Transform sightOrigin;
+    private Weapon _weapon;
+    public override void Initialize(Weapon weapon)
+    {
+        _weapon = weapon;
+        EnableAttachment();
+    }
+
+    public override void EnableAttachment()
+    {
+        this.gameObject.SetActive(true);
+        _weapon.SightOrigin = sightOrigin;
+    }
+    public override void DisableAttachment()
+    {
+        this.gameObject.SetActive(false);
+    }
+
+}

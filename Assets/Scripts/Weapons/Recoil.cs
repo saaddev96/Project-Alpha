@@ -4,29 +4,53 @@ using UnityEngine;
 
 public class Recoil : MonoBehaviour
 {
+    private float RecoilX => CurrentWeaponType.recoilX;
+    private float RecoilY => CurrentWeaponType.recoilY;
+    private float RecoilZ => CurrentWeaponType.recoilZ;
+    private float RecoilSnapinessSpeed => CurrentWeaponType.recoilSnapinessSpeed;
+    private float RecoilRecoverSpeed => CurrentWeaponType.recoilRecoverSpeed;
+    private float HipFireRecoilMultiplier => CurrentWeaponType.hipFireRecoilMultiplier;
+    private Weapon CurrentWeapon
+    {
+        get {
 
+            Weapon weapon = PlayerSlotManager.Instance.CurrentItem as Weapon;
+            if(weapon != null)
+            {
+                return weapon;
+            }
+            else
+            {
+                return null;
+            }
+        }
+    
+    }
+    private WeaponType CurrentWeaponType => CurrentWeapon.P_WeaponType;
 
-    [Header("Recoil Pattern")]
-    [SerializeField]private float recoilX;
-    [SerializeField] private float recoilY;
-    [SerializeField] private float recoilZ;
-
-    [Header("Recoil Settings")]
-    [SerializeField] private float recoilSnapinessSpeed;
-    [SerializeField] private float recoilRecoverSpeed;
-    [SerializeField] private float hipFireRecoilMultiplier;
     private Vector3 targetRotation;
     private Vector3 currentRotation;
 
+    private void Start()
+    {
+        
+    }
     private void Update()
     {
-        targetRotation = Vector3.Lerp(targetRotation, Vector3.zero, recoilRecoverSpeed * Time.deltaTime);
-        currentRotation = Vector3.Slerp(currentRotation, targetRotation, recoilSnapinessSpeed * Time.deltaTime);
+        if (CurrentWeapon == null) return;
+        targetRotation = Vector3.Lerp(targetRotation, Vector3.zero, RecoilRecoverSpeed * Time.deltaTime);
+        currentRotation = Vector3.Slerp(currentRotation, targetRotation, RecoilSnapinessSpeed * Time.deltaTime);
         transform.localRotation = Quaternion.Euler(currentRotation);
     }
     public void FireRecoil()
     {
-        targetRotation += new Vector3(recoilX, Random.Range(-recoilY, recoilY), Random.Range(-recoilZ, recoilZ));
+
+        Vector3 randRecoil = new Vector3(RecoilX, Random.Range(-RecoilY, RecoilY), Random.Range(-RecoilZ, RecoilZ));
+        if (CurrentWeapon.isAds)
+        {
+            randRecoil /= HipFireRecoilMultiplier;
+        }
+        targetRotation += randRecoil;
     }
 }
 

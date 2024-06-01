@@ -70,15 +70,15 @@ public class HeadBob : MonoBehaviour
     }
     private Vector3 Focusing()
     {
-        Vector3 pos = new Vector3(transform.position.x, transform.position.y + cameraCtrler.position.y, transform.position.z);
-         pos += cameraCtrler.forward * 20.0f;
+        Vector3 pos = new Vector3(transform.position.x, transform.position.y + cameraCtrler.parent.parent.position.y, transform.position.z);
+         pos += cameraCtrler.parent.forward * 20.0f;
         return pos;
     }
     private void Update()
     {
         ResetPos();
         ResetRot();
-        //cameraCtrler.LookAt(Focusing());
+        cameraCtrler.parent.parent.LookAt(Focusing());
     }
     public void PlayMotion(float speed)
     {
@@ -91,13 +91,14 @@ public class HeadBob : MonoBehaviour
     public void ResetPos()
     {
         if (!canHeadBob) return;
-        if (cameraCtrler.localPosition == startPos) return;
-        cameraCtrler.localPosition = Vector3.Lerp(cameraCtrler.localPosition, startPos, 4* Time.deltaTime);
+        if (cameraCtrler.position == startPos) return;
+        cameraCtrler.localPosition = Vector3.Lerp(cameraCtrler.localPosition, startPos, 10 * Time.deltaTime);
     }
     private void ResetRot()
     {
-        if (HandsCtrlerLeft.localRotation == LeftHandStartRot && HandsCtrlerRight.localRotation == RightHandStartRot) return;
+        if (HandsCtrlerLeft.localRotation == LeftHandStartRot) return;
         HandsCtrlerLeft.localRotation = Quaternion.Lerp(HandsCtrlerLeft.localRotation, LeftHandStartRot, 4 * Time.deltaTime);
-        HandsCtrlerRight.localRotation = Quaternion.Lerp(HandsCtrlerRight.localRotation, RightHandStartRot, 4* Time.deltaTime);
+        if (HandsCtrlerRight.localRotation == RightHandStartRot) return;
+        HandsCtrlerRight.localRotation = Quaternion.Lerp(HandsCtrlerRight.localRotation, RightHandStartRot, 4 * Time.deltaTime);
     }
 }

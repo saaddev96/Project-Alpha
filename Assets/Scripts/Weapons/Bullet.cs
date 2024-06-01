@@ -14,6 +14,7 @@ public class Bullet : MonoBehaviour
     private Color debugColor;
     private Vector3 perviousPos;
     private bool hitSomething = false;
+    test _test;// TODO : Remove This
     private void Start()
     {
         if (debug)
@@ -44,8 +45,15 @@ public class Bullet : MonoBehaviour
             transform.position = hitPoint;
             Quaternion rot = Quaternion.FromToRotation(Vector3.forward, hit.normal);
             Vector3 pos = hit.point;
-            Instantiate(impact, pos, rot);
+            GameObject spawnedObj = Instantiate(impact, pos, rot);
             hitSomething = true;
+
+            // TODO : This Part for Testing
+            if(hit.collider.gameObject.TryGetComponent<test>(out _test))
+            {
+                spawnedObj.transform.parent=hit.transform.GetChild(1).GetChild(0).GetChild(0).transform;
+                _test.AddRotation(Vector3.Dot(hit.collider.transform.forward, PlayerStateMachine.instance.gameObject.transform.forward) * -80);
+            }
         }
     }
 

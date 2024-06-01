@@ -42,12 +42,12 @@ MonoBehaviour:
     data:
       clip: {fileID: 8300000, guid: 02be1ec2f64fe9b498e14bb98932bd27, type: 3}
       aSource: {fileID: 0}
-      volume: 0.5
+      volume: 0.3
   - soundName: CockingEndState
     data:
       clip: {fileID: 8300000, guid: 6272032d1b7be3f419b583d241c619cf, type: 3}
       aSource: {fileID: 0}
-      volume: 0.4
+      volume: 0.2
   - soundName: MagEjectState
     data:
       clip: {fileID: 8300000, guid: a11db1b980b387e45bd5b3ae159a1c96, type: 3}
@@ -63,3 +63,8 @@ MonoBehaviour:
       clip: {fileID: 8300000, guid: 0caced2055d53c949895e847a1f35ab0, type: 3}
       aSource: {fileID: 0}
       volume: 0.3
+  - soundName: MagEmptyState
+    data:
+      clip: {fileID: 8300000, guid: cc7e0243b0695dc4f91a62fa08f900bc, type: 3}
+      aSource: {fileID: 0}
+      volume: 0.4
