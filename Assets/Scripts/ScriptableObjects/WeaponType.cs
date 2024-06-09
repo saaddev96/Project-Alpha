@@ -15,7 +15,7 @@ public class WeaponType : ScriptableObject
     [Header("References")]
 
     public GameObject bullet;
-    public GameSound WeaponSounds;
+    public WeaponSounds WeaponSounds;
 
     [Header("Magazine Setting")]
 

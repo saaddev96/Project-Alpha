@@ -46,7 +46,7 @@ public class Recoil : MonoBehaviour
     {
 
         Vector3 randRecoil = new Vector3(RecoilX, Random.Range(-RecoilY, RecoilY), Random.Range(-RecoilZ, RecoilZ));
-        if (CurrentWeapon.isAds)
+        if (CurrentWeapon.IsAds)
         {
             randRecoil /= HipFireRecoilMultiplier;
         }

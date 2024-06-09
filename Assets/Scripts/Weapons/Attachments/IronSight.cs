@@ -5,7 +5,6 @@ using UnityEngine;
 public class IronSight : Attachment
 {
     [SerializeField] private Transform sightOrigin;
-    private Weapon _weapon;
     public override void Initialize(Weapon weapon)
     {
         _weapon = weapon;

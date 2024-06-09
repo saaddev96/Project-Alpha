@@ -9,62 +9,67 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 562bdc06091fc34488edfbab551535ba, type: 3}
+  m_Script: {fileID: 11500000, guid: da137194584ed68459e9f4c6cb158c34, type: 3}
   m_Name: BerettaSounds
   m_EditorClassIdentifier: 
   sounds:
-  - soundName: DrawState
+  - state: 0
     data:
       clip: {fileID: 8300000, guid: 089b11dcc375cf5438f62d943d7f1369, type: 3}
       aSource: {fileID: 0}
       volume: 0.3
-  - soundName: SafetySwitchState
+  - state: 1
     data:
       clip: {fileID: 8300000, guid: 9b0ed5f1dd3078f48849db7d8ad8f249, type: 3}
       aSource: {fileID: 0}
       volume: 0.3
-  - soundName: FireStartState
+  - state: 2
     data:
-      clip: {fileID: 8300000, guid: 828d196091376eb4dade6b7775d777b6, type: 3}
+      clip: {fileID: 8300000, guid: 1854b9c7d9bd50247a01bf8bf6d43c55, type: 3}
+      aSource: {fileID: 0}
+      volume: 0.4
+  - state: 3
+    data:
+      clip: {fileID: 0}
+      aSource: {fileID: 0}
+      volume: 0
+  - state: 4
+    data:
+      clip: {fileID: 0}
       aSource: {fileID: 0}
       volume: 0.6
-  - soundName: FireEndState
-    data:
-      clip: {fileID: 0}
-      aSource: {fileID: 0}
-      volume: 0
-  - soundName: FireEndEmptyState
-    data:
-      clip: {fileID: 0}
-      aSource: {fileID: 0}
-      volume: 0
-  - soundName: CockingStartState
+  - state: 5
     data:
       clip: {fileID: 8300000, guid: 02be1ec2f64fe9b498e14bb98932bd27, type: 3}
       aSource: {fileID: 0}
-      volume: 0.3
-  - soundName: CockingEndState
+      volume: 0.1
+  - state: 6
     data:
       clip: {fileID: 8300000, guid: 6272032d1b7be3f419b583d241c619cf, type: 3}
       aSource: {fileID: 0}
-      volume: 0.2
-  - soundName: MagEjectState
+      volume: 0.1
+  - state: 7
     data:
       clip: {fileID: 8300000, guid: a11db1b980b387e45bd5b3ae159a1c96, type: 3}
       aSource: {fileID: 0}
-      volume: 0.5
-  - soundName: MagInjectState
+      volume: 0.2
+  - state: 8
     data:
       clip: {fileID: 8300000, guid: 658762a662523e4478f5812b384f0c53, type: 3}
       aSource: {fileID: 0}
-      volume: 0.4
-  - soundName: HolsterState
+      volume: 0.2
+  - state: 9
     data:
       clip: {fileID: 8300000, guid: 0caced2055d53c949895e847a1f35ab0, type: 3}
       aSource: {fileID: 0}
-      volume: 0.3
-  - soundName: MagEmptyState
+      volume: 0.2
+  - state: 10
     data:
       clip: {fileID: 8300000, guid: cc7e0243b0695dc4f91a62fa08f900bc, type: 3}
       aSource: {fileID: 0}
-      volume: 0.4
+      volume: 0.2
+  - state: 11
+    data:
+      clip: {fileID: 8300000, guid: f8b2e970f42996e46aa71afd8d3b67de, type: 3}
+      aSource: {fileID: 0}
+      volume: 0.7

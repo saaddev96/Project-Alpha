@@ -3,23 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Cinemachine;
+
+public enum eWeaponStates
+{
+    DrawState = 0,
+    SafetySwitchState,
+    FireStartState,
+    FireEndState,
+    FireEndEmptyState,
+    CockingStartState,
+    CockingEndState,
+    MagEjectState,
+    MagInjectState,
+    HolsterState,
+    MagEmptyState,
+    FireSilencerState
+}
 [RequireComponent(typeof(AttachmentHandler))]
 public class Weapon : Item
 {
-    public enum eWeaponStates
-    {
-        DrawState = 0,
-        SafetySwitchState,
-        FireStartState,
-        FireEndState,
-        FireEndEmptyState,
-        CockingStartState,
-        CockingEndState,
-        MagEjectState,
-        MagInjectState,
-        HolsterState,
-        MagEmptyState
-    }
+
 
     // Serialized Fields 
     [Header("Functional Setting")]
@@ -31,6 +34,10 @@ public class Weapon : Item
     [Header("Bullet Fire Origin")]
     [Space]
     [SerializeField] private Transform firingOrigin;
+    [Space]
+    [Header("FPS Hand Pivot")]
+    [Space]
+    [SerializeField] private Transform Fps_HandPivot;
     [Space]
     [Header("Item Audio Source")]
     [Space]
@@ -60,7 +67,7 @@ public class Weapon : Item
     private int BurstBulletCount => weapon.BurstBulletCount;
     private float ShakePower => weapon.shakePower;
     private int AdsFOV => weapon.AdsFOV;
-    private GameSound GameSounds => weapon.WeaponSounds;
+    private WeaponSounds GameSounds => weapon.WeaponSounds;
 
     private int bulletCount;
     private float firingTimer = 0;
@@ -69,7 +76,7 @@ public class Weapon : Item
     private bool isReloading = false;
     private bool fired = false;
     private bool isInspecting;
-    private bool IsSlideOut;
+    private bool isSilderOut;
     private bool hasSilencer = false;
     private int bulletFired = 0;
     private int bulletsOnMag;
@@ -81,10 +88,10 @@ public class Weapon : Item
     public static event Action<AudioData> currentItemSoundEvent;
     private CinemachineImpulseSource impulseSource;
     private AudioData gunAudioData;
-    private PlayerStateMachine playerStateMachine => PlayerStateMachine.instance;
+    private PlayerStateMachine W_PlayerStateMachine => PlayerStateMachine.instance;
     private Recoil recoil;
     public bool IsTriggerOn => isTriggerOn;
-    public bool isAds { get; private set; }
+    public bool IsAds { get; private set; }
     public bool HasSilencer { get { return hasSilencer; } set { hasSilencer = value; } }
     public WeaponType P_WeaponType => weapon;
 
@@ -92,12 +99,13 @@ public class Weapon : Item
     {
 
         impulseSource = GetComponent<CinemachineImpulseSource>();
-        IsSlideOut = false;
         AnimatorBrainInit(item_Anim.layerCount, item_Anim, eItemAnimation.Idle);
         inputReader.InspectEvent += Inspect;
         inputReader.AdsEvent += Aim;
         inputReader.FireEvent += Fire;
         inputReader.ReloadEvent += Reload;
+        ResetWeapon();
+        isSilderOut = false;
     }
 
     private void OnDisable()
@@ -107,8 +115,6 @@ public class Weapon : Item
         inputReader.AdsEvent -= Aim;
         inputReader.FireEvent -= Fire;
         inputReader.ReloadEvent -= Reload;
-        ResetShoot();
-        isReloading = false;
     }
 
     public override void Awake()
@@ -143,22 +149,22 @@ public class Weapon : Item
     }
     void AdsCheck()
     {
-        if (isAds)
+        if (IsAds && !isReloading)
         {
-            playerStateMachine.FPS_VCamera.m_Lens.FieldOfView = Mathf.Lerp(playerStateMachine.FPS_VCamera.m_Lens.FieldOfView, (float)AdsFOV, 10 * Time.deltaTime);
-            playerStateMachine.FPS_WeaponCamera.fieldOfView = Mathf.Lerp(playerStateMachine.FPS_WeaponCamera.fieldOfView, 45, 10 * Time.deltaTime);
+            W_PlayerStateMachine.FPS_VCamera.m_Lens.FieldOfView = Mathf.Lerp(W_PlayerStateMachine.FPS_VCamera.m_Lens.FieldOfView, (float)AdsFOV, 10 * Time.deltaTime);
+            W_PlayerStateMachine.FPS_WeaponCamera.fieldOfView = Mathf.Lerp(W_PlayerStateMachine.FPS_WeaponCamera.fieldOfView, 45, 10 * Time.deltaTime);
         }
         else
         {
-            playerStateMachine.FPS_VCamera.m_Lens.FieldOfView = Mathf.Lerp(playerStateMachine.FPS_VCamera.m_Lens.FieldOfView, 60, 10 * Time.deltaTime);
-            playerStateMachine.FPS_WeaponCamera.fieldOfView = Mathf.Lerp(playerStateMachine.FPS_WeaponCamera.fieldOfView, 55, 10 * Time.deltaTime);
+            W_PlayerStateMachine.FPS_VCamera.m_Lens.FieldOfView = Mathf.Lerp(W_PlayerStateMachine.FPS_VCamera.m_Lens.FieldOfView, 60, 10 * Time.deltaTime);
+            W_PlayerStateMachine.FPS_WeaponCamera.fieldOfView = Mathf.Lerp(W_PlayerStateMachine.FPS_WeaponCamera.fieldOfView, 55, 10 * Time.deltaTime);
         }
     }
     void InspectCheck()
     {
         if (isInspecting)
         {
-            if (playerStateMachine.PlayerState != PlayerState.Idle || isAds)
+            if (W_PlayerStateMachine.PlayerState != PlayerState.Idle || IsAds)
             {
                 Arm_animatorbrain.AnimatorBrainStopCurrent(this.itemLayer);
                 AnimatorBrainStopCurrent(0);
@@ -172,32 +178,37 @@ public class Weapon : Item
             Arm_animatorbrain.AnimatorBrainPlay(eAnimation.Inspect, this.itemLayer, true, false);
         }
     }
+
+    Coroutine burstRoutine;
+
     void FireCheck()
     {
         if (!canFire) return;
-       
-            if ((!isFiring&& fired || IsAuto && isAbleToShootAgain) && !isReloading && isTriggerOn&& bulletsOnMag > 0)
+
+        if ((!isFiring && fired || IsAuto && isAbleToShootAgain) && !isReloading && isTriggerOn && bulletsOnMag > 0)
+        {
+            if (IsBurst)
             {
-                if (IsBurst)
+                IEnumerator Wait(float time)
                 {
-
-                    IEnumerator Wait(float time)
+                    for (int i = 0; i < BurstBulletCount; i++)
                     {
-                        for (int i = 0; i < BurstBulletCount; i++)
+                        if (bulletsOnMag <= 0)
                         {
-                            Shoot();
-                            yield return new WaitForSeconds(time);
+                            yield break;
                         }
+                        Shoot();
+                        yield return new WaitForSeconds(time);
                     }
-                    StartCoroutine(Wait(timeToFireAgain));
+                }
+                burstRoutine = StartCoroutine(Wait(timeToFireAgain));
 
-                }
-                else
-                {
-                    Shoot();
-                }
             }
-        
+            else
+            {
+                Shoot();
+            }
+        }
     }
     public override void OnActive()
     {
@@ -221,7 +232,7 @@ public class Weapon : Item
     {
         if (CanReload)
         {
-            if (IsSlideOut)
+            if (isSilderOut)
             {
                 AnimatorBrainPlay(eItemAnimation.ReloadEmpty, 0, true, true, 0);
                 Arm_animatorbrain.AnimatorBrainPlay(eAnimation.ReloadEmpty, this.itemLayer, true, true, 0);
@@ -241,7 +252,7 @@ public class Weapon : Item
     }
     void StartReloading()
     {
-        ResetShoot();
+        ResetWeapon();
         isReloading = true;
     }
     void applyReload()
@@ -252,7 +263,7 @@ public class Weapon : Item
         bulletsOnMag += bulletsNeeded;
         bulletCount -= bulletsNeeded;
         isReloading = false;
-        IsSlideOut = false;
+        isSilderOut = false;
 
     }
 
@@ -260,19 +271,17 @@ public class Weapon : Item
     {
         isTriggerOn = ctx;
         fired = true;
-        if(bulletsOnMag<=0) PlaySound(eWeaponStates.MagEmptyState);
+        if(bulletsOnMag<=0 && ctx) PlaySound(eWeaponStates.MagEmptyState);
     }
     public void Aim(bool ctx)
     {
-        playerStateMachine.IsAdsing = ctx;
-        isAds = ctx;
+        W_PlayerStateMachine.IsAdsing = ctx;
+        IsAds = ctx;
     }
     void Shoot()
     {
 
-        
-        PlaySound(eWeaponStates.FireStartState);
-        FiringInstantiation();
+        FiringInitialize();
         PlayFiringShake();
         PlayFiringEffect();
         PlayFiringAnimation();
@@ -290,13 +299,13 @@ public class Weapon : Item
 
 
     }
-    void FiringInstantiation()
+    void FiringInitialize()
     {
         // Finalizing the Firing  calculating direcftion using Ray and instantiating bullet
         float firingCount = IsShotGun ? PelletsCount : 1;
-        float spreadAngle = IsShotGun && isAds ? AimConeAngle / 2 : IsShotGun ? AimConeAngle : AimConeAngle / 10;
+        float spreadAngle = IsShotGun && IsAds ? AimConeAngle / 2 : IsShotGun ? AimConeAngle : AimConeAngle / 10;
         Ray ray;
-        if (isAds)
+        if (IsAds)
         {
             Vector3 SightPos = Camera.main.WorldToScreenPoint(sightOrigin.position);
             ray = Camera.main.ScreenPointToRay(new Vector3(SightPos.x, SightPos.y, 0));
@@ -338,20 +347,27 @@ public class Weapon : Item
     {
         // Playing Effects
         bulletShell.SetActive(true);
-        if(!hasSilencer)
-        muzzleFlash.SetActive(true);
+        if (!hasSilencer)
+        {
+            muzzleFlash.SetActive(true);
+            PlaySound(eWeaponStates.FireStartState);
+        }
+        else
+        {
+            PlaySound(eWeaponStates.FireSilencerState);
+        }
     }
     void PlayFiringAnimation()
     {
         // This Function Responsible of Playing Sync Firing Animation of Both Hands And Weapon
         Arm_animatorbrain.AnimatorBrainStopCurrent(this.itemLayer);
         AnimatorBrainStopCurrent(0);
-        if (isAds)
+        if (IsAds)
         {
             if (bulletsOnMag == 1)
             {
                 AnimatorBrainPlay(eItemAnimation.FireAdsEmpty, 0, true, false, 0);
-                IsSlideOut = true;
+                isSilderOut = true;
             }
             else
             {
@@ -365,7 +381,7 @@ public class Weapon : Item
             if (bulletsOnMag == 1)
             {
                 AnimatorBrainPlay(eItemAnimation.FireEmpty, 0, true, false, 0);
-                IsSlideOut = true;
+                isSilderOut = true;
             }
             else
             {
@@ -392,12 +408,17 @@ public class Weapon : Item
 
         return direction.normalized;
     }
-    void ResetShoot()
+    void ResetWeapon()
     {
+        if (burstRoutine != null) 
+        {
+            StopCoroutine(burstRoutine); 
+        }
         isFiring = false;
+        fired = false;
+        isReloading = false;
         muzzleFlash.SetActive(false);
         bulletShell.SetActive(false);
-        fired = false;
     }
 
     // Called By Animation Event
@@ -407,7 +428,10 @@ public class Weapon : Item
         gunAudioData = GameSounds.GetSoundClip(weaponState, audioSource);
         currentItemSoundEvent?.Invoke(gunAudioData);
     }
-
+    public void AlignSight(Vector3 desiredOffset)
+    {
+        Fps_HandPivot.position += desiredOffset;
+    }
     protected override void OnMouseOver()
     {
     }
@@ -428,4 +452,5 @@ public class Weapon : Item
             w_attachmentHandler.ChangeToNext(AttachmentType.Sight);
         }
     }
+ 
 }

@@ -16,13 +16,13 @@ MonoBehaviour:
   isAuto: 0
   isBurst: 0
   bullet: {fileID: 2140409970624122400, guid: ef398838175c75f46aed9e6c46b21570, type: 3}
-  WeaponSounds: {fileID: 11400000, guid: 475518e99f724e6479657f95a1509779, type: 2}
+  WeaponSounds: {fileID: 11400000, guid: 1de4c2fac618786469f76bcc5b5c212d, type: 2}
   bulletCount: 1000
   magSize: 8
   maxFiringDistance: 2500
   bulletSpeed: 400
   PelletsCount: 10
-  aimConeAngle: 8
+  aimConeAngle: 4
   fireRate: 10
   BurstBulletCount: 3
   recoilX: -2

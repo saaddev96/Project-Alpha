@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Silencer : Attachment
 {
-    private Weapon _weapon;
     public override void Initialize(Weapon weapon)
     {
         _weapon = weapon;

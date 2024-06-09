@@ -17,6 +17,7 @@ public class AttachmentHandler : MonoBehaviour
     private Attachment CurrentMuzzle { get { return currentMuzzle; } set { currentMuzzle = value; } }
 
     Weapon weapon;
+    Vector3 DesiredOffset;
     private void Awake()
     {
         weapon = this.gameObject.GetComponent<Weapon>();
@@ -90,15 +91,15 @@ public class AttachmentHandler : MonoBehaviour
                 {
                     return x.type == type;
                 });
-                print(Array.IndexOf(SightAttachment.attachments, CurrentSight));
                 int SightCurrentIndex = Array.IndexOf(SightAttachment.attachments, CurrentSight) + 1;
                 SightCurrentIndex %= SightAttachment.attachments.Length;
                 CurrentSight.DisableAttachment();
                 CurrentSight = SightAttachment.attachments[SightCurrentIndex];
                 CurrentSight.Initialize(weapon);
                 break;
-
         }
 
     }
+   
+  
 }
