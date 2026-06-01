@@ -8,7 +8,7 @@ public class PauseGame : MonoBehaviour
 #if UNITY_EDITOR
        
         if (Input.GetKeyDown(KeyCode.P)&& Application.isPlaying)
-        {
+        { 
             Debug.Break();
         }
 #endif

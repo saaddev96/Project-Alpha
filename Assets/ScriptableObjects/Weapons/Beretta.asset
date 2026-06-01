@@ -18,7 +18,7 @@ MonoBehaviour:
   bullet: {fileID: 2140409970624122400, guid: ef398838175c75f46aed9e6c46b21570, type: 3}
   WeaponSounds: {fileID: 11400000, guid: 1de4c2fac618786469f76bcc5b5c212d, type: 2}
   bulletCount: 1000
-  magSize: 8
+  magSize: 16
   maxFiringDistance: 2500
   bulletSpeed: 400
   PelletsCount: 10
